@@ -1,0 +1,15 @@
+[submodule "recursos/external_repos/awesome-copilot"]
+	path = recursos/external_repos/awesome-copilot
+	url = git@github.com:github/awesome-copilot.git
+[submodule "recursos/external_repos/clean-code-skills"]
+	path = recursos/external_repos/clean-code-skills
+	url = https://github.com/ertugrul-dmr/clean-code-skills
+[submodule "recursos/external_repos/gentleman_skills"]
+	path = recursos/external_repos/gentleman_skills
+	url = https://github.com/Gentleman-Programming/Gentleman-Skills
+[submodule "recursos/external_repos/skills"]
+	path = recursos/external_repos/skills
+	url = git@github.com:anthropics/skills.git
+[submodule "recursos/external_repos/prowler"]
+	path = recursos/external_repos/prowler
+	url = git@github.com:prowler-cloud/prowler.git
