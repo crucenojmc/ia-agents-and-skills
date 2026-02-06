@@ -16,6 +16,7 @@ Este repositorio centraliza **metodologías, formatos, templates y flujos de tra
 | `universal-skill-creator` | Crea skills para agentes de IA siguiendo el estándar Agent Skills | Cuando el usuario pide crear un skill, documentar patrones para IA, o necesita guía sobre diseño de skills | [SKILL.md](skills/universal-skill-creator/SKILL.md) |
 | `meta-skill-creator` | (Legacy) Creador de skills original | Cuando se necesite referencia del formato anterior | [SKILL.md](skills/meta-skill-creator/SKILL.md) |
 | `pdf-processing` | Procesamiento de archivos PDF | Cuando se trabaje con PDFs | [SKILL.md](skills/pdf-processing/SKILL.md) |
+| `local-time` | Obtiene hora/fecha del sistema | Preguntas sobre hora, fecha o timestamps | [SKILL.md](skills/local-time/SKILL.md) |
 
 ---
 
@@ -47,6 +48,7 @@ El agente debe cargar skills automáticamente según el contexto:
 | Crear/modificar skills | `universal-skill-creator` | Leer SKILL.md antes de actuar |
 | Trabajar con PDFs | `pdf-processing` | Seguir instrucciones del skill |
 | Documentar patrones de IA | `universal-skill-creator` | Usar proceso interactivo |
+| Obtener hora/fecha | `local-time` | Ejecutar script para obtener dato preciso |
 
 ### Cómo Cargar un Skill
 
