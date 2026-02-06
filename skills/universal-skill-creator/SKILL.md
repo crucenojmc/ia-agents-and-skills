@@ -19,6 +19,38 @@ Este skill actúa como el sistema operativo para la gestión de Agent Skills. Su
 
 ---
 
+## 🔍 Módulo 0: Discovery de Skills (skills.sh)
+
+**Trigger:** Usuario solicita crear un skill o capacidad nueva.
+
+**Acción PREVIA a la creación:**
+
+1. **Identificar keywords** del skill solicitado por el usuario.
+2. **Buscar en repositorios populares:**
+   ```bash
+   # Listar skills disponibles
+   npx -y skills add vercel-labs/agent-skills --list
+   npx -y skills add anthropics/skills --list
+   npx -y skills add obra/superpowers --list
+   ```
+3. **Presentar opciones relevantes** al usuario con nombre y descripción.
+4. **Decisión del usuario:**
+   - ✅ **Instalar existente** → Ejecutar instalación con `npx skills add`
+   - ❌ **Ninguno aplica** → Continuar con Módulo 1 (Creación)
+
+**Comandos de Instalación:**
+```bash
+# Instalar skill específico para Antigravity
+npx -y skills add <repo> --skill <nombre> -a antigravity -y
+
+# Instalación global
+npx -y skills add <repo> --skill <nombre> -a antigravity -g -y
+```
+
+> 📚 Referencia: [skills_sh_ecosystem.md](../../../recursos/skills_sh_ecosystem.md)
+
+---
+
 ## 🏗️ Módulo 1: Creación de Skills
 
 **Trigger:** Cuando el usuario quiere crear un nuevo skill.

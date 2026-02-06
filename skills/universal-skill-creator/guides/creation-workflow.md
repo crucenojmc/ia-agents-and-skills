@@ -2,6 +2,24 @@
 
 Esta guía detalla el proceso interactivo que el agente debe seguir al crear un nuevo skill.
 
+## Fase 0: Discovery (skills.sh)
+
+Antes de crear un skill, busca si ya existe algo similar en la comunidad:
+
+1. **Identificar keywords** del skill solicitado por el usuario.
+2. **Buscar en repositorios populares:**
+   ```bash
+   npx -y skills add vercel-labs/agent-skills --list
+   npx -y skills add anthropics/skills --list
+   npx -y skills add obra/superpowers --list
+   ```
+3. **Presentar opciones relevantes** al usuario con descripción.
+4. **Decisión:**
+   - ✅ Instalar existente → `npx -y skills add <repo> --skill <nombre> -a antigravity -y`
+   - ❌ Ninguno aplica → Continuar con Fase 1
+
+---
+
 ## Fase 1: Descubrimiento (Cuestionario)
 
 Antes de crear cualquier skill, haz estas preguntas al usuario:
