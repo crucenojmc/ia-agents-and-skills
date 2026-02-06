@@ -38,19 +38,49 @@ git submodule update --init --recursive
 
 ## 🌟 Fuentes de Inspiración
 
-Este repositorio se nutre de las mejores prácticas y patrones de la comunidad. Los siguientes repositorios externos están incluidos como submódulos en `recursos/external_repos/` para referencia y estudio:
+Este repositorio se nutre de las mejores prácticas y patrones de la comunidad.
+
+### 🚀 Ecosistema skills.sh
+
+[![skills.sh](https://img.shields.io/badge/Powered%20by-skills.sh-blue)](https://skills.sh/)
+
+Este proyecto está integrado con **[skills.sh](https://skills.sh/)**, el ecosistema abierto de skills para agentes de IA mantenido por Vercel Labs. 
+
+```bash
+# Buscar skills disponibles
+npx skills add vercel-labs/agent-skills --list
+
+# Instalar un skill para Antigravity
+npx skills add anthropics/skills --skill pdf -a antigravity -y
+```
+
+> 📖 Ver [recursos/skills_sh_ecosystem.md](recursos/skills_sh_ecosystem.md) para documentación completa.
+
+### 📚 Repositorios de Referencia
+
+Los siguientes repositorios están incluidos como submódulos en `recursos/external_repos/`:
 
 | Repositorio | Descripción | Inspiración |
 |-------------|-------------|-------------|
-| **[awesome-copilot](https://github.com/github/awesome-copilot)** | Colección curada de recursos de GitHub Copilot | Patrones de prompting y extensiones para agentes |
-| **[Gentleman-Skills](https://github.com/Gentleman-Programming/Gentleman-Skills)** | Skills del canal Gentleman Programming | Estructura de skills y metodologías de desarrollo |
-| **[clean-code-skills](https://github.com/ertugrul-dmr/clean-code-skills)** | Skills enfocados en código limpio | Principios de calidad y buenas prácticas |
+| **[skills.sh](https://skills.sh/)** | Directorio de skills para agentes de IA | CLI, formato SKILL.md, ecosistema abierto |
 | **[skills (Anthropic)](https://github.com/anthropics/skills)** | Skills oficiales de Anthropic para Claude | Estándar de formato y estructura de skills |
-| **[prowler](https://github.com/prowler-cloud/prowler)** | Herramienta de seguridad cloud | Ejemplo de proyecto bien estructurado con skills |
+| **[awesome-copilot](https://github.com/github/awesome-copilot)** | Colección curada de recursos de GitHub Copilot | Patrones de prompting y extensiones |
+| **[Gentleman-Skills](https://github.com/Gentleman-Programming/Gentleman-Skills)** | Skills del canal Gentleman Programming | Estructura y metodologías de desarrollo |
+| **[clean-code-skills](https://github.com/ertugrul-dmr/clean-code-skills)** | Skills enfocados en código limpio | Principios de calidad y buenas prácticas |
+| **[prowler](https://github.com/prowler-cloud/prowler)** | Herramienta de seguridad cloud | Ejemplo de proyecto bien estructurado |
 
-> 💡 **Nota**: Estos repositorios son submódulos git. Al clonar, ejecuta `./init-submodules.sh` para descargarlos.
+> 💡 **Nota**: Ejecuta `./init-submodules.sh` para descargar los submódulos git.
 
 ---
 
 ## 🤝 Colaboración
 Este proyecto busca adaptar las mejores prácticas de la industria. Si encuentras un flujo de trabajo interesante o una técnica de prompting efectiva, ¡agrégala siguiendo la guía!
+
+---
+
+## 📜 Créditos y Atribuciones
+
+- **[skills.sh](https://skills.sh/)** - Vercel Labs - Ecosistema abierto de agent skills
+- **[Anthropic](https://github.com/anthropics/skills)** - Especificación y skills de referencia
+- **[Agent Skills Standard](https://agentskills.io)** - Estándar de la comunidad
+
