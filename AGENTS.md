@@ -18,6 +18,7 @@ Este repositorio centraliza **metodologías, formatos, templates y flujos de tra
 | `pdf-processing` | Procesamiento de archivos PDF | Cuando se trabaje con PDFs | [SKILL.md](skills/pdf-processing/SKILL.md) |
 | `local-time` | Obtiene hora/fecha del sistema | Preguntas sobre hora, fecha o timestamps | [SKILL.md](skills/local-time/SKILL.md) |
 | `demand-analysis-expert` | Experto en estadística y forecast | "analisis de demanda", "forecast", "estacionalidad" | [SKILL.md](skills/demand-analysis-expert/SKILL.md) |
+| `os-awareness` | Verifica el SO antes de comandos de sistema | "instalar", "update", "apt", "brew", "comando" | [SKILL.md](skills/os-awareness/SKILL.md) |
 
 ---
 
@@ -30,12 +31,24 @@ Este repositorio centraliza **metodologías, formatos, templates y flujos de tra
    skills/universal-skill-creator/SKILL.md
    ```
 
-2. **Sigue el proceso interactivo** del skill-creator:
+2. **🚨 CHECKLIST OBLIGATORIO** (Antes de crear NADA):
+   El agente DEBE validar explícitamente estos pasos en su pensamiento o output:
+   - [ ] ¿Ejecuté `npx skills find` o `search_community_skills.sh`?
+   - [ ] ¿Busqué skills.sh por palabras clave similares?
+   - [ ] ¿Es realmente necesario un nuevo skill o basta con el existente?
+   
+   *Si se salta este paso, el agente está violando el protocolo.*
+
+3. **🚨 CHECKLIST DE CALIDAD** (Antes de finalizar):
+   - [ ] ¿Ejecuté `audit_workspace.sh`?
+   - [ ] ¿Corregí todos los warnings?
+
+3. **Sigue el proceso interactivo** del skill-creator:
    - Pregunta siempre el tipo de skill (genérico/específico/orquestador)
    - Consulta si hay código de referencia
    - Verifica si se desea auto-invocación
 
-3. **Usa los templates apropiados**:
+4. **Usa los templates apropiados**:
    - `assets/templates/SKILL-GENERIC.md` para skills universales
    - `assets/templates/SKILL-PROJECT.md` para skills de proyecto
    - `assets/templates/SKILL-ORCHESTRATOR.md` para skills coordinadores

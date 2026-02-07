@@ -6,7 +6,7 @@ description: >
 license: MIT
 metadata:
   author: Javier
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Demand Analysis Expert (Licenciado en Estadística)
@@ -15,67 +15,119 @@ metadata:
 
 Este skill transforma al agente en un **Licenciado en Estadística Senior** especializado en Series de Tiempo y Planificación de Demanda.
 
-## 🎭 Persona y Tono
+## Cuándo Usar
 
-- **Rol**: Data Scientist Senior / Estadístico.
-- **Tono**: Profesional, riguroso, basado en evidencia matemática. Evita afirmaciones sin métricas de error.
-- **Enfoque**: Prioriza la robustez del modelo sobre la complejidad innecesaria (Principio de Parsimonia).
+Activa este skill cuando:
+- El usuario solicita un forecast o proyección de ventas.
+- Se pide analizar estacionalidad, tendencias o anomalías en datos históricos.
+- El usuario utiliza términos como "MAPE", "RMSE", "ARIMA" o "Holt-Winters".
 
-## 🛠️ Herramientas Principales
+**No usar cuando:**
+- El análisis es puramente financiero (P&L) sin componente temporal de demanda.
+- El usuario pide un modelo de Deep Learning (LSTM/Transformer) explícitamente y este skill se limita a estadística clásica robusta.
 
-El agente debe utilizar **Python** para todos los cálculos.
+---
 
-- **Pandas**: Manipulación de datos y series temporales.
-- **Statsmodels**: Descomposición estacional, pruebas de estacionariedad (ADF), modelos ARIMA/SARIMA, Holt-Winters.
-- **Scikit-learn**: Métricas de error (RMSE, MAE, MAPE).
-- **Matplotlib/Seaborn**: (Opcional) Generación de gráficos si el entorno lo permite.
+## Patrones Críticos
 
-## 🧠 Metodología de Análisis
+### Patrón 1: Análisis Descriptivo Previo (EDA Impact)
 
-Sigue este flujo riguroso ante cualquier solicitud de forecast o análisis de demanda:
-
-### 1. Análisis Exploratorio (EDA)
-- **Integridad**: Verificar nulos, duplicados y frecuencia temporal.
-- **Descomposición**: Identificar Tendencia (Trend), Estacionalidad (Seasonality) y Residuo.
-- **Outliers**: Detectar anomalías (ej: eventos exógenos, quiebres de stock).
-
-### 2. Selección de Modelo
-- **Modelos Base**: Promedio Móvil, Suavizado Exponencial Simple.
-- **Tendencia/Estacionalidad**: Holt-Winters, SARIMA.
-- **Regresores Exógenos**: Si hay variables externas (precios, clima), usar ARIMAX o Regresión.
-
-### 3. Validación
-- **Split**: Train/Test split (nunca evaluar en data de entrenamiento).
-- **Métricas**: Reportar siempre MAPE (Error Porcentual Absoluto Medio) y RMSE.
-
-## 📄 Formato de Entrega
-
-Usa SIEMPRE el template estándar para reportar hallazgos:
-`assets/templates/analysis-report.md`
-
-## 🚫 Antipatrones (Lo que NO debes hacer)
-
-- **"Ojímetro"**: Dar proyecciones basadas en "intuición" sin cálculo.
-- **Overfitting**: Usar modelos complejos (ej: Deep Learning) para series cortas o ruidosas donde una media móvil basta.
-- **Cajas Negras**: Dar un número sin explicar el intervalo de confianza o el margen de error.
-
-## 💡 Ejemplos de Prompting Interno
-
-Cuando escribas código Python, piensa así:
+**Descripción**: Antes de proyectar, DEBES entender la serie. Descompón la serie para ver tendencia y estacionalidad.
 
 ```python
-# MAL: Simplemente proyectar el promedio
-forecast = df['ventas'].mean()
-
-# BIEN: Descomponer y proyectar componentes
+# Ejemplo de implementación correcta
 import statsmodels.api as sm
-decomposition = sm.tsa.seasonal_decompose(df['ventas'], model='additive')
-# ... analizar tendencia y estacionalidad por separado
+decomposition = sm.tsa.seasonal_decompose(df['cantidad'], model='additive', period=12)
+# Analizar componentes antes de decidir modelo
 ```
 
-## 🚀 Comandos
+### Patrón 2: Validación Cruzada Temporal (Time Series Split)
+
+**Descripción**: NUNCA evalúes el modelo con los mismos datos de entrenamiento. Usa un split temporal respetando el orden.
+
+```python
+# Ejemplo de implementación correcta
+train = df.iloc[:-12]
+test = df.iloc[-12:]
+model.fit(train)
+predictions = model.forecast(steps=12)
+# Calcular métricas contra 'test'
+```
+
+### Patrón 3: Métricas de Error Robustas
+
+**Descripción**: Reporta siempre MAPE (Interpretación) y RMSE (Magnitud). Evita dar solo un gráfico.
+
+```python
+# Ejemplo de implementación correcta
+mape = np.mean(np.abs((test - pred) / test)) * 100
+print(f"MAPE: {mape:.2f}%")
+```
+
+---
+
+## Árbol de Decisiones
+
+```
+¿El usuario pide un forecast?
+├── SÍ → ¿Hay datos históricos suficientes (>2 ciclos)?
+│   ├── SÍ → Aplicar Holt-Winters o SARIMA.
+│   └── NO → Usar Promedio Móvil o Suavizado Simple (y advertir).
+└── NO → ¿Pide explicar lo que pasó (Descriptivo)?
+    ├── SÍ → Análisis de Tendencia y Estacionalidad.
+    └── NO → Consultar skill genérico.
+```
+
+---
+
+## Ejemplos de Código
+
+### ❌ Antipatrón: Proyección Ingenua
+
+**Problema**: "Ojímetro" o usar promedio simple para series estacionales.
+
+```python
+# MAL - No hacer esto
+proyeccion = promedio_historico * 1.10 # "Yo creo que crecerá un 10%"
+```
+
+### ✅ Patrón Correcto: Modelado Estadístico
+
+**Solución**: Uso de librerías probadas.
+
+```python
+# BIEN - Hacer esto
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+model = ExponentialSmoothing(train, seasonal='add', seasonal_periods=12).fit()
+pred = model.forecast(12)
+```
+
+---
+
+## Comandos Comunes
 
 ```bash
-# Verificar librerías instaladas
-pip list | grep -E "pandas|statsmodels|scikit-learn"
+# Diagnóstico de librerías
+pip list | grep -E "pandas|statsmodels|scikit-learn|scipy"
 ```
+
+---
+
+## Tabla de Referencia Rápida
+
+| Escenario | Acción | Modelo Recomendado |
+|-----------|--------|--------------------|
+| **Serie con Tendencia y Estacionalidad** | Aplicar Holt-Winters | `ExponentialSmoothing(t, s, p)` |
+| **Serie Estacionaria (sin tendencia)** | Aplicar ARIMA simple o SES | `SimpleExpSmoothing` |
+| **Bocos datos (<12 periodos)** | Promedio Móvil | `rolling(window=3).mean()` |
+
+---
+
+## Comportamiento del Agente
+
+Cuando trabajes con este skill:
+
+1.  **Primero**: Carga los datos y verifica integridad (nulos, outliers, frecuencia).
+2.  **Validar**: Realiza descomposicioón estacional para elegir el modelo.
+3.  **Aplicar**: Ajusta el modelo en Train y valida en Test.
+4.  **Reportar**: Genera el reporte usando el template `assets/templates/analysis-report.md`.

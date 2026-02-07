@@ -69,7 +69,18 @@ Si se solicitó auto-invocación, instruye al usuario para agregar el skill a `A
 | `{nombre}` | {cuándo activar} | [SKILL.md](skills/{nombre}/SKILL.md) |
 ```
 
-## Fase 6: Despliegue y Configuración
+## Fase 6: Auditoría y Calidad (Mandatory)
+
+Antes de dar el skill por terminado, DEBES validar que cumpla el estándar:
+
+1. Ejecutar el script de auditoría:
+   ```bash
+   ./skills/universal-skill-creator/scripts/audit_workspace.sh
+   ```
+2. Corregir cualquier **Warning** o **Error**.
+3. Verificar que `SKILL.md` tenga las secciones estándar ("Cuándo Usar", "Patrones Críticos").
+
+## Fase 7: Despliegue y Configuración
 
 Ofrece ejecutar el script de configuración:
 
