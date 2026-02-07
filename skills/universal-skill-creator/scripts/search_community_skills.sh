@@ -1,44 +1,40 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # search_community_skills.sh
-# Busca skills en los repositorios principales de la comunidad skills.sh
+# Busca skills de manera inteligente en todo el ecosistema skills.sh usando `npx skills find`
 # ==============================================================================
 
 set -e
 
-REPOS=(
-  "vercel-labs/agent-skills"
-  "vercel-labs/skills"
-  "anthropics/skills"
-  "obra/superpowers"
-  "expo/skills"
-  "supabase/agent-skills"
-  "better-auth/skills"
-)
+QUERY=$1
 
-KEYWORD=${1:-""}
+if [[ -z "$QUERY" ]]; then
+  echo "Uso: $0 <query>"
+  echo "Ejemplo: $0 react"
+  exit 1
+fi
 
-echo "🔍 Buscando skills en la comunidad skills.sh..."
-echo "=============================================="
-echo ""
+echo "🔍 Buscando '$QUERY' en todo el ecosistema skills.sh..."
+echo "========================================================"
 
-for repo in "${REPOS[@]}"; do
-  echo "📦 $repo"
-  echo "---"
+# Pipe 'q' to quit interactive mode immediately after receiving output
+# npx skills find output format includes ANSI codes which we need to clean
+OUTPUT=$(echo "q" | npx -y skills find "$QUERY" 2>/dev/null)
+
+# Clean ANSI codes using sed
+CLEAN_OUTPUT=$(echo "$OUTPUT" | sed 's/\x1b\[[0-9;]*m//g')
+
+if [[ -z "$CLEAN_OUTPUT" || "$CLEAN_OUTPUT" == *"No skills found"* ]]; then
+  echo "❌ No se encontraron skills para '$QUERY'."
+  echo " Intenta con términos más generales."
+else
+  # Filter out the header/footer noise if possible, or just show the relevant lines
+  # The output contains "Install with...", lines with repo@skill, and description links.
+  # We'll just display it as is, but cleaned.
   
-  # Ejecutar npx y capturar salida
-  if output=$(npx -y skills add "$repo" --list 2>/dev/null); then
-    if [[ -n "$KEYWORD" ]]; then
-      # Filtrar por keyword si se proporcionó
-      echo "$output" | grep -i "$KEYWORD" || echo "  (sin coincidencias para '$KEYWORD')"
-    else
-      echo "$output"
-    fi
-  else
-    echo "  ⚠️ No disponible o sin skills"
-  fi
+  echo "$CLEAN_OUTPUT" | grep -v "No skills found" | grep -v "^$" | head -n 20
+  
   echo ""
-done
-
-echo "=============================================="
-echo "💡 Para instalar: npx -y skills add <repo> --skill <nombre> -a antigravity"
+  echo "========================================================"
+  echo "💡 Instalar: ./skills/universal-skill-creator/scripts/install_community_skill.sh <repo> <skill>"
+fi
