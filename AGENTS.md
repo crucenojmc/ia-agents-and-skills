@@ -17,6 +17,7 @@ Este repositorio centraliza **metodologías, formatos, templates y flujos de tra
 | `meta-skill-creator` | (Legacy) Creador de skills original | Cuando se necesite referencia del formato anterior | [SKILL.md](skills/meta-skill-creator/SKILL.md) |
 | `pdf-processing` | Procesamiento de archivos PDF | Cuando se trabaje con PDFs | [SKILL.md](skills/pdf-processing/SKILL.md) |
 | `local-time` | Obtiene hora/fecha del sistema | Preguntas sobre hora, fecha o timestamps | [SKILL.md](skills/local-time/SKILL.md) |
+| `demand-analysis-expert` | Experto en estadística y forecast | "analisis de demanda", "forecast", "estacionalidad" | [SKILL.md](skills/demand-analysis-expert/SKILL.md) |
 
 ---
 
