@@ -11,10 +11,20 @@
 - **+37 agentes soportados**: Incluyendo Antigravity, Claude Code, Cursor, Codex, etc.
 - **Leaderboard**: Ranking de skills basado en telemetría anónima de instalaciones
 - **Estándar SKILL.md**: Formato unificado con YAML frontmatter
+- **Búsqueda Inteligente**: `npx skills find` para buscar en todo el ecosistema
 
 ---
 
 ## 🛠️ CLI - Comandos Principales
+
+### Búsqueda de Skills (Smart Search)
+```bash
+# Buscar interactivamente
+npx skills find <keywords>
+
+# Buscar en scripts (no-interactivo)
+echo "q" | npx skills find <keywords>
+```
 
 ### Instalación de Skills
 ```bash
