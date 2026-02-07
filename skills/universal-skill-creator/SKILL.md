@@ -26,14 +26,12 @@ Este skill actúa como el sistema operativo para la gestión de Agent Skills. Su
 **Acción PREVIA a la creación:**
 
 1. **Identificar keywords** del skill solicitado por el usuario.
-2. **Buscar en repositorios populares:**
+2. **Buscar en skills.sh:**
    ```bash
-   # Listar skills disponibles
-   npx -y skills add vercel-labs/agent-skills --list
-   npx -y skills add anthropics/skills --list
-   npx -y skills add obra/superpowers --list
+   # Buscar en todo el ecosistema (inteligente)
+   ./skills/universal-skill-creator/scripts/search_community_skills.sh "<keywords>"
    ```
-3. **Presentar opciones relevantes** al usuario con nombre y descripción.
+3. **Analizar resultados:** El script filtra y limpia la salida de `npx skills find`.
 4. **Decisión del usuario:**
    - ✅ **Instalar existente** → Ejecutar instalación con `npx skills add`
    - ❌ **Ninguno aplica** → Continuar con Módulo 1 (Creación)
