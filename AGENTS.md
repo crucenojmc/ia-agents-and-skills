@@ -60,7 +60,6 @@ El agente debe cargar skills automáticamente según el contexto:
 | Contexto | Skill a Cargar | Acción |
 |----------|----------------|--------|
 | Crear/modificar skills | `universal-skill-creator` | Leer SKILL.md antes de actuar |
-| Trabajar con PDFs | `pdf-processing` | Seguir instrucciones del skill |
 | Documentar patrones de IA | `universal-skill-creator` | Usar proceso interactivo |
 | Obtener hora/fecha | `local-time` | Ejecutar script para obtener dato preciso |
 
@@ -82,15 +81,13 @@ view_file("skills/{nombre-skill}/SKILL.md")
 ├── setup.sh                  # Script de configuración
 ├── skills/                   # Skills para agentes
 │   ├── universal-skill-creator/
-│   │   ├── SKILL.md
-│   │   ├── assets/
-│   │   │   ├── templates/
-│   │   │   ├── checklists/
-│   │   │   └── examples/
-│   │   ├── guides/
-│   │   └── scripts/
-│   ├── meta-skill-creator/
-│   └── pdf-processing/
+│       ├── SKILL.md
+│       ├── assets/
+│       │   ├── templates/
+│       │   ├── checklists/
+│       │   └── examples/
+│       ├── guides/
+│       └── scripts/
 ├── templates/                # Templates generales
 ├── workflows/                # Flujos de trabajo
 ├── agentes/                  # Configuraciones de agentes

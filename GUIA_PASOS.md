@@ -28,7 +28,10 @@ Utilizar los templates ubicados en la carpeta `/templates` para estructurar la i
 
 ### 4. Clasificación y Almacenamiento
 Guardar los archivos generados en las carpetas correspondientes:
-*   `/agentes`: Definiciones de personalidades y roles.
+*   `/agentes`: Definiciones de personalidades.
+    *   Usa **Orchestrator** para coordinar.
+    *   Usa **Skill Architect** para crear skills.
+    *   Usa **Docs Specialist** para documentar.
 *   `/skills`: Capacidades técnicas específicas (ej. "Consultar base de datos", "Generar diagrama").
 *   `/workflows`: Guías paso a paso de procesos complejos (ej. "Refactorización de Legacy Code").
 *   `/recursos`: Enlaces originales, transcripciones crudas o notas de investigación.

@@ -7,7 +7,10 @@ Centralizar metodologías, formatos, templates y flujos de trabajo recopilados d
 
 ## 📂 Estructura del Repositorio
 
-*   **Agentes (`agentes/`)**: Definiciones de roles especializados (ej. Arquitecto, QA, Developer Frontend). Configuración de prompts de sistema y personalidades.
+*   **Agentes (`agentes/`)**: Equipo de IA especializado para el mantenimiento del proyecto.
+    *   **Orchestrator**: Gerente del proyecto y despachador.
+    *   **Skill Architect**: Experto en creación y auditoría de skills.
+    *   **Docs Specialist**: Encargado de la documentación viva.
 *   **Skills (`skills/`)**: Habilidades modulares que los agentes pueden utilizar (ej. Lectura de archivos, Análisis de logs, Creación de diagramas).
 *   **Flujos de Trabajo (`workflows/`)**: Definiciones de procesos paso a paso para tareas complejas (ej. 'Ciclo de TDD', 'Análisis de Seguridad').
 *   **Templates (`templates/`)**: Plantillas base para crear nuevos agentes, skills y workflows estandarizados.
