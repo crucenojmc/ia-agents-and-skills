@@ -19,6 +19,11 @@ Este repositorio centraliza **metodologías, formatos, templates y flujos de tra
 | `local-time` | Obtiene hora/fecha del sistema | Preguntas sobre hora, fecha o timestamps | [SKILL.md](skills/local-time/SKILL.md) |
 | `demand-analysis-expert` | Experto en estadística y forecast | "analisis de demanda", "forecast", "estacionalidad" | [SKILL.md](skills/demand-analysis-expert/SKILL.md) |
 | `os-awareness` | Verifica el SO antes de comandos de sistema | "instalar", "update", "apt", "brew", "comando" | [SKILL.md](skills/os-awareness/SKILL.md) |
+| `documentation-orchestrator` | Orquestador de documentación Docs-as-Code | "generate docs", "document project", "validate docs" | [SKILL.md](skills/documentation-orchestrator/SKILL.md) |
+| `docs-renderer` | Renderizado avanzado Markdown a HTML/PDF con temas | "render pdf", "export html", "generate output" | [SKILL.md](skills/docs-renderer/SKILL.md) |
+| `mermaid-expert` | Experto en diagramas Mermaid, C4 y Estilos | "create diagram", "mermaid help", "c4 model" | [SKILL.md](skills/mermaid-expert/SKILL.md) |
+| `knowledge-structure` | Linter y validador de estructura y WikiLinks | "validate structure", "fix links", "lint docs" | [SKILL.md](skills/knowledge-structure/SKILL.md) |
+| `web-screenshot` | Capturas de pantalla automatizadas (local/web) | "take screenshot", "capture url" | [SKILL.md](skills/web-screenshot/SKILL.md) |
 
 ---
 
