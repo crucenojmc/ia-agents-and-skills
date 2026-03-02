@@ -1,6 +1,7 @@
 ---
+name: '{AGENT_NAME}'
 description: 'Agente Orquestador Principal. Coordina el trabajo entre agentes y asegura el cumplimiento de: {AGENTS_OBJECTIVE}. Personalidad: {AGENTS_PERSONALITY}.'
-tools: ['task', 'read_file', 'run_command', 'grep_search', 'find_by_name', 'view_file_outline']
+tools: [Read, Glob, Grep, Bash, Edit, Write]
 ---
 
 # Agente Orquestador (ROOT)

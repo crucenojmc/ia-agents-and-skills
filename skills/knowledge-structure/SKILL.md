@@ -15,6 +15,15 @@ metadata:
 
 El guardián de la integridad de la documentación. Se encarga de crear estructuras base y validar que los vínculos entre documentos sean correctos.
 
+## 🎯 Cuándo Usarlo (Triggers)
+
+**Usa este skill cuando el usuario pida:**
+- "Validar la estructura de la documentación"
+- "Arreglar enlaces rotos en los docs"
+- "Crear la estructura base de documentación"
+- "Ejecutar linting en los archivos markdown"
+
+
 ## 🚀 Capacidades
 
 ### 1. Scaffolding (Crear Estructura)

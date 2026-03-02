@@ -1,8 +1,9 @@
 ---
+name: '{AGENT_NAME}'
 description: 'Agente Especialista de Scope: {SCOPE_NAME}. Encargado de {SCOPE_DESCRIPTION}. Stack: {SCOPE_TECH_STACK}.'
 scope: '{SCOPE_NAME}'
-tools: ['read_file', 'write_to_file', 'run_command', 'grep_search']
-model: 'gemini-2.0-pro-exp'
+tools: [Read, Glob, Grep, Bash, Edit, Write]
+model: 'sonnet'
 ---
 
 # Agente Especialista: {SCOPE_NAME}

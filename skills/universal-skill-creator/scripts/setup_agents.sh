@@ -59,9 +59,10 @@ show_help() {
     echo "  --claude    Configure Claude Code"
     echo "  --gemini    Configure Gemini CLI (Antigravity)"
     echo "  --codex     Configure Codex (OpenAI)"
-    echo "  --copilot   Configure GitHub Copilot"
-    echo "  --global    Also install to global locations (~/.gemini, ~/.claude)"
-    echo "  --copy      Copy files instead of creating symlinks"
+    echo "  --copilot      Configure GitHub Copilot"
+    echo "  --global       Also install to global locations (~/.gemini, ~/.claude)"
+    echo "  --enable-teams Enable Claude Agent Teams (Experimental config)"
+    echo "  --copy         Copy files instead of creating symlinks"
     echo "  --help      Show this help message"
     echo ""
     echo "If no options provided, runs in interactive mode."
@@ -89,8 +90,8 @@ show_menu() {
     echo -e "${CYAN}(Use numbers to toggle, Enter to confirm)${NC}"
     echo ""
 
-    local options=("Claude Code" "Gemini CLI (Google)" "Codex (OpenAI)" "GitHub Copilot" "Global Install (~/.claude, ~/.gemini)")
-    local selected=(true true false true false)  # Claude, Gemini, Copilot selected by default
+    local options=("Claude Code" "Gemini CLI (Google)" "Codex (OpenAI)" "GitHub Copilot" "Global Install (~/.claude, ~/.gemini)" "Enable Claude Agent Teams (Exp.)")
+    local selected=(true true false true false false)
 
     while true; do
         for i in "${!options[@]}"; do
@@ -100,10 +101,10 @@ show_menu() {
                 echo -e "  [ ] $((i+1)). ${options[$i]}"
             fi
         done
-    echo -e "  ${YELLOW}a${NC}. Select all"
+        echo -e "  ${YELLOW}a${NC}. Select all"
         echo -e "  ${YELLOW}n${NC}. Select none"
         echo ""
-        echo -n "Toggle (1-5, a, n) or Enter to confirm: "
+        echo -n "Toggle (1-6, a, n) or Enter to confirm: "
 
         read -r choice
 
@@ -113,14 +114,15 @@ show_menu() {
             3) selected[2]=$([ "${selected[2]}" = true ] && echo false || echo true) ;;
             4) selected[3]=$([ "${selected[3]}" = true ] && echo false || echo true) ;;
             5) selected[4]=$([ "${selected[4]}" = true ] && echo false || echo true) ;;
-            a|A) selected=(true true true true true) ;;
-            n|N) selected=(false false false false false) ;;
+            6) selected[5]=$([ "${selected[5]}" = true ] && echo false || echo true) ;;
+            a|A) selected=(true true true true true true) ;;
+            n|N) selected=(false false false false false false) ;;
             "") break ;;
             *) echo -e "${RED}Invalid option${NC}" ;;
         esac
 
         # Move cursor up to redraw menu
-        echo -en "\033[12A\033[J"
+        echo -en "\033[13A\033[J"
     done
 
     SETUP_CLAUDE=${selected[0]}
@@ -128,6 +130,7 @@ show_menu() {
     SETUP_CODEX=${selected[2]}
     SETUP_COPILOT=${selected[3]}
     SETUP_GLOBAL=${selected[4]}
+    SETUP_CLAUDE_TEAMS=${selected[5]}
     
     # Check if global is selected, ask for advanced mode
     if [ "$SETUP_GLOBAL" = true ]; then
@@ -357,10 +360,63 @@ install_skills_individually() {
     done
 }
 
+# Helper for agents installation
+install_agents_individually() {
+    local source_dir="$1"
+    local target_dir="$2"
+    local mode="$3" # "copy" or "link"
+    
+    # Only proceed if the source directory exists
+    if [ ! -d "$source_dir" ]; then
+        return
+    fi
+    
+    mkdir -p "$target_dir"
+    echo -e "  Agent Target: $target_dir"
+    
+    # Iterate over agent folders in source_dir
+    for agent_dir in "$source_dir"/*; do
+        if [ -d "$agent_dir" ] && [ -f "$agent_dir/AGENT.md" ]; then
+            local agent_name=$(basename "$agent_dir")
+            local dest_agent="$target_dir/${agent_name}.md"
+            
+            # Remove existing link or file
+            rm "$dest_agent" 2>/dev/null || true
+            
+            if [ "$mode" == "copy" ]; then
+                cp "$agent_dir/AGENT.md" "$dest_agent"
+                echo -e "${GREEN}    ✓ Copied Agent: ${agent_name}.md${NC}"
+            else
+                # Symlinks need to go up from .claude/agents to root/agentes
+                ln -s "$agent_dir/AGENT.md" "$dest_agent"
+                echo -e "${GREEN}    ✓ Linked Agent: ${agent_name}.md${NC}"
+            fi
+        fi
+    done
+}
+
 setup_claude_global() {
     local target="$HOME/.claude/skills"
     # Use individual installation to safely merge with existing skills
     install_skills_individually "$SKILLS_SOURCE" "$target" "Claude (Global)" "copy"
+    
+    local agent_target="$HOME/.claude/agents"
+    install_agents_individually "$REPO_ROOT/agentes" "$agent_target" "copy"
+}
+
+setup_claude_teams() {
+    local settings_file="$HOME/.claude/settings.json"
+    echo -e "${GREEN}  ✓ Configuring Claude Agent Teams (Experimental)${NC}"
+    mkdir -p "$HOME/.claude"
+    if [ ! -f "$settings_file" ]; then
+        echo '{ "env": { "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1" } }' > "$settings_file"
+    else
+        if command -v jq &> /dev/null; then
+            jq '.env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1"' "$settings_file" > "${settings_file}.tmp" && mv "${settings_file}.tmp" "$settings_file"
+        else
+            echo -e "${YELLOW}  ⚠ jq not found. Could not automatically configure CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS in $settings_file. Please add it manually.${NC}"
+        fi
+    fi
 }
 
 setup_gemini() {
@@ -424,12 +480,18 @@ setup_gemini_global() {
     local target="$HOME/.gemini/antigravity/skills"
     # Use individual installation to safely merge with existing skills
     install_skills_individually "$SKILLS_SOURCE" "$target" "Gemini (Global)" "copy"
+    
+    local agent_target="$HOME/.gemini/antigravity/agents"
+    install_agents_individually "$REPO_ROOT/agentes" "$agent_target" "copy"
 }
 
 setup_copilot_global() {
     local target="$HOME/.copilot/skills"
     # Use individual installation to safely merge with existing skills
     install_skills_individually "$SKILLS_SOURCE" "$target" "Copilot (Global)" "copy"
+    
+    local agent_target="$HOME/.copilot/agents"
+    install_agents_individually "$REPO_ROOT/agentes" "$agent_target" "copy"
 }
 
 # =============================================================================
@@ -464,6 +526,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --global)
             SETUP_GLOBAL=true
+            shift
+            ;;
+        --enable-teams)
+            SETUP_CLAUDE_TEAMS=true
             shift
             ;;
         --copy)
@@ -511,13 +577,13 @@ done
 echo ""
 
 # Interactive mode if no flags provided
-if [ "$SETUP_CLAUDE" = false ] && [ "$SETUP_GEMINI" = false ] && [ "$SETUP_CODEX" = false ] && [ "$SETUP_COPILOT" = false ]; then
+if [ "$SETUP_CLAUDE" = false ] && [ "$SETUP_GEMINI" = false ] && [ "$SETUP_CODEX" = false ] && [ "$SETUP_COPILOT" = false ] && [ "$SETUP_CLAUDE_TEAMS" = false ]; then
     show_menu
     echo ""
 fi
 
 # Check if at least one selected
-if [ "$SETUP_CLAUDE" = false ] && [ "$SETUP_GEMINI" = false ] && [ "$SETUP_CODEX" = false ] && [ "$SETUP_COPILOT" = false ]; then
+if [ "$SETUP_CLAUDE" = false ] && [ "$SETUP_GEMINI" = false ] && [ "$SETUP_CODEX" = false ] && [ "$SETUP_COPILOT" = false ] && [ "$SETUP_CLAUDE_TEAMS" = false ]; then
     echo -e "${YELLOW}No AI assistants selected. Nothing to do.${NC}"
     exit 0
 fi
@@ -532,6 +598,7 @@ TOTAL=0
 [ "$SETUP_GLOBAL" = true ] && [ "$SETUP_CLAUDE" = true ] && TOTAL=$((TOTAL + 1))
 [ "$SETUP_GLOBAL" = true ] && [ "$SETUP_GEMINI" = true ] && TOTAL=$((TOTAL + 1))
 [ "$SETUP_GLOBAL" = true ] && [ "$SETUP_COPILOT" = true ] && TOTAL=$((TOTAL + 1))
+[ "$SETUP_CLAUDE_TEAMS" = true ] && TOTAL=$((TOTAL + 1))
 
 # Check if interactive global configuration is needed
 if [ "$CONFIGURE_GLOBAL_INTERACTIVE" = true ]; then
@@ -551,6 +618,12 @@ fi
 if [ "$SETUP_GLOBAL" = true ] && [ "$SETUP_CLAUDE" = true ]; then
     echo -e "${YELLOW}[$STEP/$TOTAL] Claude Code (global)${NC}"
     setup_claude_global
+    STEP=$((STEP + 1))
+fi
+
+if [ "$SETUP_CLAUDE_TEAMS" = true ]; then
+    echo -e "${YELLOW}[$STEP/$TOTAL] Claude Agent Teams (Experimental)${NC}"
+    setup_claude_teams
     STEP=$((STEP + 1))
 fi
 

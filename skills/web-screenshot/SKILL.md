@@ -16,6 +16,14 @@ metadata:
 Herramienta de captura automatizada basada en Puppeteer (Chrome Headless).
 Diseñada para funcionar en Docker o nativamente si Node.js está disponible.
 
+## 🎯 Cuándo Usarlo (Triggers)
+
+**Usa este skill cuando el usuario pida:**
+- "Tomar una captura de pantalla de..."
+- "Capturar esta URL"
+- "Generar un screenshot de la web"
+
+
 ## 🚀 Uso
 
 ### Capturar URL o Archivo
