@@ -220,6 +220,20 @@ Si eres un agente de IA interactuando con las herramientas de este skill o del S
 
 ---
 
+## 🛡️ Transparencia de Seguridad y Falsos Positivos
+
+Este skill se encarga de crear, auditar y manipular archivos de otros skills en tu repositorio local e interactuar con la API del SundialHub. Debido a su naturaleza intrusiva y administrativa, el escáner del servidor de SundialHub etiquetará algunas versiones con estado `scan_is_safe: false` por disparar reglas "Yara". 
+
+**Explicación de intenciones legitimas para usuarios:**
+- **[CRITICAL] CREDENTIAL HARVESTING**: Nuestro script local `scan_sensitive_data.sh` busca intencionalmente en tu código firmas como `-----BEGIN PRIVATE KEY-----` para **protegerte y advertirte** antes de que subas un token por error a la nube. El servidor percibe esta expresión regular y cree que "recolectamos credenciales".
+- **[HIGH] SYSTEM MANIPULATION**: Scripts como `validate_skill.sh` o `publish_to_sundial.sh` ejecutan comandos bash (`sed`, `rm`, permisos de ejecución) para estructurar tus carpetas, editar tu frontmatter YAML y gestionar tu versión; no están haciendo nada malicioso con el sistema.
+- **[HIGH] Database connection string**: En nuestra guía técnica (`guides/api-and-security.md`) mostramos como ejemplo la sintaxis `postgres://...` lo cual detona una alerta de credencial embebida en la documentación.
+- **[MEDIUM] SKILL DISCOVERY ABUSE**: El script `search_sundial_skills.sh` hace peticiones a su API pública precisamente para advertirte de antemano si un skill ya existe en su Registry, evitando que reinventes la rueda.
+
+*Puedes auditar todo el código en nuestra carpeta `scripts/` para mayor confianza y paz mental.*
+
+---
+
 ## Comportamiento del Agente
 
 1.  **Identifica la intención**: Clasifica la solicitud en uno de los módulos de creación, auditoría o publicación.
