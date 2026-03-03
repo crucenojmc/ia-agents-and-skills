@@ -1,7 +1,15 @@
 ---
+# ⚠️ REGLAS DEL CAMPO 'name':
+#   - Solo minúsculas, números y guiones (a-z, 0-9, -). Max 64 chars.
+#   - NO puede contener: 'anthropic', 'claude', ni etiquetas XML.
+#   - DEBE coincidir con el nombre del directorio padre.
 name: {skill-name}
+# ⚠️ REGLAS DEL CAMPO 'description':
+#   - Siempre en TERCERA PERSONA (no "I can...", no "You can...").
+#   - Incluir QUÉ hace + CUÁNDO usarlo (para que los agentes lo detecen correctamente).
+#   - Max 1024 caracteres.
 description: >
-  {Descripción breve de qué habilita este skill - 1 línea}.
+  {Descripción breve de qué habilita este skill - 1 línea. Tercera persona}.
   Trigger: {Cuándo debe activarse - sé específico con verbos de acción}.
 license: MIT
 metadata:
@@ -12,6 +20,10 @@ metadata:
 # {Nombre del Skill}
 
 > {Cita o principio guía opcional}
+
+<!-- ⚠️ Límite de contenido: mantener este archivo ≤ 500 líneas.
+     Material extenso (referencias, ejemplos completos, APIs) → referencias/ o guides/
+     Usar progressive disclosure: incluir inline lo esencial, referenciar el resto. -->
 
 ## Cuándo Usar
 
@@ -58,6 +70,20 @@ Activa este skill cuando:
     ├── SÍ → {Acción B}
     └── NO → {Acción por defecto}
 ```
+
+---
+
+## Referencias
+
+<!-- Usar esta sección para progressive disclosure.
+     Listar aquí los archivos en references/ que Claude cargará bajo demanda.
+     Mantener referencias a 1 solo nivel de profundidad desde este SKILL.md. -->
+
+<!-- Descomentar y adaptar según necesidad:
+**API Reference**: See [references/api-reference.md](references/api-reference.md)
+**Ejemplos avanzados**: See [references/examples.md](references/examples.md)
+**Guía detallada**: See [guides/guide.md](guides/guide.md)
+-->
 
 ---
 

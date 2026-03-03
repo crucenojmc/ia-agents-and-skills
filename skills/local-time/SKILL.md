@@ -8,7 +8,7 @@ license: MIT
 metadata:
   author: mapplics
   version: "1.0"
-allowed-tools: Bash
+allowed-tools: Bash, PowerShell
 ---
 
 # Local Time
@@ -151,3 +151,6 @@ Cuando trabajes con este skill:
 - Prefiere el formato `iso` para logs y registros
 - El script detecta la zona horaria automáticamente
 - En Windows, asegúrate de que PowerShell permita ejecución de scripts
+ 
+  
+   

@@ -6,17 +6,44 @@ Usa esta lista **antes** de comenzar a crear un skill.
 
 ## ✅ Verificaciones Obligatorias
 
-### 1. ¿El skill ya existe?
+### 1a. ¿El skill ya existe localmente?
 
 ```bash
-# Buscar skills existentes
+# Buscar skills existentes en el workspace
 ls -la skills/
 ls -la ~/.gemini/antigravity/skills/  # Si buscas globales
 ```
 
 - [ ] Revisé la carpeta `skills/` del proyecto
 - [ ] Revisé los skills globales (si aplica)
-- [ ] No existe un skill que cubra este caso
+- [ ] No existe un skill local que cubra este caso
+
+### 1b. ¿Existe en SundialHub? (Registry Oficial)
+
+```bash
+# OBLIGATORIO: buscar en el registry antes de crear
+./skills/universal-skill-creator/scripts/search_sundial_skills.sh "<keywords del skill>"
+```
+
+- [ ] Ejecuté `search_sundial_skills.sh` con keywords relevantes
+- [ ] Evaluté las señales de confianza de los resultados:
+  - [ ] `installs` — adopción de la comunidad
+  - [ ] `safety` — riesgos de scripts (revisar si tiene scripts)
+  - [ ] `version` — madurez del skill
+- [ ] Revisé el SKILL.md del skill más relevante (si existe)
+- [ ] Decidí: **No existe skill adecuado** en SundialHub → continuar
+
+> Si encontraste un skill adecuado, detener aquí e instalar:
+> `./skills/universal-skill-creator/scripts/install_sundial_skill.sh <author>/<skill>`
+
+### 1c. ¿Existe en skills.sh? (Ecosistema Alternativo)
+
+```bash
+./skills/universal-skill-creator/scripts/search_community_skills.sh "<keywords>"
+```
+
+- [ ] Busqué en skills.sh para asegurarme de no duplicar
+- [ ] No existe una alternativa adecuada en este ecosistema
 
 ### 2. ¿Es realmente necesario un skill?
 

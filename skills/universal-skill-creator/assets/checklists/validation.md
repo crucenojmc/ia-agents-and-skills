@@ -28,8 +28,12 @@ metadata:
 ---
 ```
 
-- [ ] `name` está presente y es kebab-case
+- [ ] `name` está presente y es kebab-case (solo `a-z`, `0-9`, `-`)
+- [ ] `name` NO contiene palabras reservadas: `anthropic`, `claude`
+- [ ] `name` coincide con el nombre del directorio padre
 - [ ] `description` describe QUÉ hace + CUÁNDO activar
+- [ ] `description` está escrita en **tercera persona** (no "I can...", no "You can...")
+- [ ] `description` tiene ≤1024 caracteres
 - [ ] `license` está especificado
 - [ ] `metadata.author` está presente
 - [ ] `metadata.version` está presente (como string)
@@ -48,6 +52,62 @@ metadata:
 
 - [ ] Árbol de decisiones (si hay lógica condicional)
 - [ ] Antipatrones (qué NO hacer)
+
+### Límites de Contenido (estándar agentskills.io)
+
+- [ ] Cuerpo del SKILL.md tiene **≤500 líneas**
+- [ ] Si supera 500 líneas: material detallado movido a `references/` o `guides/`
+- [ ] Las referencias desde SKILL.md son a **máximo 1 nivel de profundidad** (no anidadas)
+- [ ] Los archivos de referencia con >100 líneas tienen **tabla de contenidos** al inicio
+
+## ✅ Validación Técnica (Opcional — Antes de Publicar)
+
+```bash
+# Con la herramienta oficial del estándar agentskills.io
+pip install skills-ref
+skills-ref validate ./mi-skill
+
+# Con el script del repositorio
+./skills/universal-skill-creator/scripts/validate_skill.sh ./mi-skill
+```
+
+- [ ] Sin errores (`✗`) del validador local
+- [ ] Sin errores de `skills-ref validate` (si se va a publicar)
+
+## ✅ Publishing a SundialHub (Solo Si Se Va a Publicar)
+
+Ver criterios completos en [guides/sundial-registry.md](../../guides/sundial-registry.md)
+y [guides/api-and-security.md](../../guides/api-and-security.md).
+
+### 🔒 Scan de Seguridad (OBLIGATORIO — No se puede saltar)
+
+- [ ] Ejecutar scan de información sensible
+- [ ] 0 hallazgos CRITICAL/HIGH
+- [ ] Revisados los hallazgos MEDIUM/LOW (si hay)
+
+```bash
+# Scan obligatorio (se ejecuta también automáticamente al publicar)
+./skills/universal-skill-creator/scripts/scan_sensitive_data.sh ./mi-skill
+```
+
+### Criterios de Calidad
+
+- [ ] El skill es genérico (no depende de configs privadas del proyecto)
+- [ ] No contiene credenciales ni rutas absolutas de máquina local
+- [ ] Sin lógica de negocio propietaria
+- [ ] Probado con ≥3 escenarios de uso real
+
+### Publicar
+
+```bash
+# Opción A: Via CLI (scan + validación automáticos)
+./skills/universal-skill-creator/scripts/publish_to_sundial.sh ./mi-skill \
+  --changelog "Descripción" --visibility public --categories coding
+
+# Opción B: Via API directa (sin Node.js)
+./skills/universal-skill-creator/scripts/sundial_api.sh publish ./mi-skill \
+  --version 1 --categories coding
+```
 - [ ] Comandos comunes
 - [ ] Tabla de referencia rápida
 - [ ] Recursos / Referencias

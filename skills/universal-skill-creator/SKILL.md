@@ -6,7 +6,7 @@ description: >
 license: MIT
 metadata:
   author: mapplics
-  version: "3.1"
+  version: "4.1"
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch, Task
 ---
 
@@ -34,13 +34,18 @@ Activa este skill cuando:
 
 ### Patrón 1: Discovery First (OBLIGATORIO)
 
-**Descripción**: Antes de crear NADA, busca si ya existe.
+**Descripción**: Antes de crear NADA, busca si ya existe. Dos registries, en orden:
 
 ```bash
-# Paso 0: Buscar en la comunidad
+# Paso 0a: Buscar en SundialHub (registry oficial agentskills.io, 52k+ skills)
+./skills/universal-skill-creator/scripts/search_sundial_skills.sh "<keywords>"
+
+# Paso 0b: Buscar en skills.sh (si SundialHub no tiene resultados relevantes)
 ./skills/universal-skill-creator/scripts/search_community_skills.sh "<keywords>"
 ```
-*Si existe algo similar: Ofrece instalarlo (`npx skills add...`). Solo crea si no hay alternativa.*
+
+*Si existe algo similar: evaluar señales de confianza (installs, safety, version) antes de instalar.
+Solo crear si no hay alternativa adecuada en ninguno de los dos.*
 
 ### Patrón 2: Revelación Progresiva
 
@@ -65,9 +70,9 @@ view_file("skills/universal-skill-creator/guides/creation-workflow.md")
 ```
 ¿Qué desea hacer el usuario?
 ├── CREAR un nuevo skill
-│   ├── ¿Ya busqué en la comunidad? (Paso 0)
-│   │   ├── NO → Ejecutar búsqueda.
-│   │   └── SÍ → Iniciar Módulo 1 (Creación).
+│   ├── ¿Busqué en SundialHub Y skills.sh? (Módulo 0 — OBLIGATORIO)
+│   │   ├── NO → Ejecutar búsqueda en ambos registries.
+│   │   └── SÍ, no hay alternativa → Iniciar Módulo 1 (Creación).
 │
 ├── AUDITAR o Arreglar skills
 │   └── Iniciar Módulo 2 (Auditoría).
@@ -75,8 +80,16 @@ view_file("skills/universal-skill-creator/guides/creation-workflow.md")
 ├── MANTENER (Borrar/Listar)
 │   └── Iniciar Módulo 3 (CMS).
 │
-└── CONFIGURAR agentes
-    └── Iniciar Módulo 4 (Setup).
+├── CONFIGURAR agentes
+│   └── Iniciar Módulo 4 (Setup).
+│
+├── PUBLICAR skill al registry
+│   ├── ¿Scan de seguridad pasado? (Módulo 6 — OBLIGATORIO)
+│   │   ├── NO → Ejecutar scan, corregir, re-escanear.
+│   │   └── SÍ → Iniciar Módulo 5 (Publishing).
+│
+└── CONSULTAR API de SundialHub
+    └── Iniciar Módulo 7 (API Directa).
 ```
 
 ---
@@ -85,7 +98,20 @@ view_file("skills/universal-skill-creator/guides/creation-workflow.md")
 
 ### Módulo 0: Discovery
 ```bash
+# Paso 0a — SundialHub (registry oficial, PRIMERO)
+./skills/universal-skill-creator/scripts/search_sundial_skills.sh "query"
+
+# Paso 0b — skills.sh (alternativo, si 0a no tiene resultados)
 ./skills/universal-skill-creator/scripts/search_community_skills.sh "query"
+```
+
+### Módulo 0: Instalar desde Registry
+```bash
+# Desde SundialHub (multi-agente)
+./skills/universal-skill-creator/scripts/install_sundial_skill.sh <author>/<skill> --claude
+
+# Desde skills.sh (Antigravity)
+./skills/universal-skill-creator/scripts/install_community_skill.sh <repo> <skill>
 ```
 
 ### Módulo 2: Auditoría
@@ -106,16 +132,101 @@ view_file("skills/universal-skill-creator/guides/creation-workflow.md")
 ./setup.sh --all --global
 ```
 
+### Módulo 5: Publishing a SundialHub
+```bash
+# Publicar skill local al registry (scan de seguridad + validación previa automática)
+./skills/universal-skill-creator/scripts/publish_to_sundial.sh ./skills/<nombre> \
+  --changelog "Descripción" --visibility public --categories coding
+
+# Ver mis skills publicados
+npx sundial-hub mine
+```
+
+### Módulo 6: Seguridad Pre-Publicación (OBLIGATORIO)
+```bash
+# 🔒 Scan obligatorio ANTES de publicar (tokens, passwords, IPs, claves)
+./skills/universal-skill-creator/scripts/scan_sensitive_data.sh ./skills/<nombre>
+
+# Modo estricto (bloquea también warnings medios/bajos)
+./skills/universal-skill-creator/scripts/scan_sensitive_data.sh ./skills/<nombre> --strict
+
+# Modo JSON para uso programático
+./skills/universal-skill-creator/scripts/scan_sensitive_data.sh ./skills/<nombre> --json
+```
+
+**⚠ IMPORTANTE**: El scan de seguridad se ejecuta automáticamente dentro de
+`publish_to_sundial.sh` y `sundial_api.sh publish`. No se puede saltear.
+Detecta: API tokens, passwords, connection strings, claves privadas, IPs privadas,
+archivos .env, credenciales de cloud, y datos personales.
+
+### Módulo 7: API Directa de SundialHub
+```bash
+# Cliente HTTP directo (sin Node.js/npx). Usa curl + token Bearer.
+# Token: se lee de $SUNDIAL_TOKEN o ~/.sundial/auth.json
+
+# Buscar skills
+./skills/universal-skill-creator/scripts/sundial_api.sh search "query" --limit 5
+
+# Ver detalle de un skill
+./skills/universal-skill-creator/scripts/sundial_api.sh show author/name
+
+# Verificar disponibilidad de nombre
+./skills/universal-skill-creator/scripts/sundial_api.sh check-name my-skill
+
+# Listar mis skills publicados
+./skills/universal-skill-creator/scripts/sundial_api.sh mine
+
+# Publicar via API directa (incluye scan de seguridad obligatorio)
+./skills/universal-skill-creator/scripts/sundial_api.sh publish ./skills/<nombre> \
+  --version 2 --categories coding --changelog "New feature"
+
+# Verificar autenticación
+./skills/universal-skill-creator/scripts/sundial_api.sh verify-auth
+
+# Usar token específico (sin auth.json)
+SUNDIAL_TOKEN=sd_xxx ./skills/universal-skill-creator/scripts/sundial_api.sh search "pdf"
+```
+
+**Endpoints HTTP descubiertos** (base: `https://www.sundialhub.com`):
+- `GET /api/hub/skills?q={query}&limit={n}` — Buscar
+- `GET /api/hub/skills/by-author-name/{author}/{name}` — Detalle
+- `GET /api/hub/skills?mine=true` — Mis skills (auth obligatoria)
+- `POST /api/hub/skills` — Crear nuevo (auth obligatoria)
+- `POST /api/hub/skills/{id}/versions` — Nueva versión (auth obligatoria)
+
+---
+
+## 🚨 Reglas Críticas para Automatización (IA & CI/CD)
+
+Si eres un agente de IA interactuando con las herramientas de este skill o del SundialHub, **memoriza estas trampas** derivadas de automatizaciones fallidas pasadas:
+
+1. **Bloqueo Interactivo en Publish (Hang):** Cuando publiques un skill usando `publish_to_sundial.sh`, si agregas `-y` (desasistido) pero omites banderas como `--categories` o `--changelog`, el comando subyacente `npx sundial-hub push` abrirá un prompt interactivo en la terminal que se quedará esperando input eternamente (ej. `? Category:` o `? Changelog:` ante un auto-bumping de versión). **Solución:** `publish_to_sundial.sh` a partir de la v4.1 tiene auto-fallbacks (`other` y `"Auto-publish via ai-agent"`), pero la buena práctica es SIEMPRE pasar explícitamente `--categories <tu-categoria>` y `--changelog "Tu mensaje"` junto con `-y` para evitar comportamientos imprevistos.
+2. **Avalancha de Embeddings en Terminal:** El comando `sundial_api.sh show` o cualquier response directo de la API de Sundial devuelve un array denso de 1536 floats (`embedding`). Esto inunda los buffers del shell y **rompe el límite de tokens de tu contexto** sumando más de 16KB de texto basura. **Solución:** Cuando llames a la API directamente con curl para traer detalles o buscar, usa siempre algo análogo a `| jq 'del(.skill.embedding)'` o usa `grep -v 'embedding'`.
+3. **Parseo Estricto de `mine=true`:** El endpoint HTTP `/api/hub/skills?mine=true` NO devuelve un array de skills en la raíz. Devuelve un objeto JSON wrapeado `{"skills": [...]}`. Intentar iterar la raíz con herramientas HTTP estáticas causará errores de llaves/índices (`KeyError: 0`). **Solución:** Parsear conscientemente la propiedad `skills`. 
+
 ---
 
 ## Comportamiento del Agente
 
-1.  **Identifica la intención**: Clasifica la solicitud en uno de los 4 módulos.
+1.  **Identifica la intención**: Clasifica la solicitud en uno de los módulos de creación, auditoría o publicación.
 2.  **Validar**: Si es Creación, ejecuta el Checklist de Discovery.
-3.  **Aplicar**: Usa los scripts de automatización correspondientes.
-4.  **Reportar**: Confirma la acción y actualiza `AGENTS.md` si es necesario.
+3.  **Delegación Estratégica (Uso de Subagentes para Validaciones y Publicación)**: 
+    - **NUNCA** ejecutes `publish_to_sundial.sh` u otros comandos de validación o escaneo pesados directamente en el shell del agente principal.
+    - **SIEMPRE** delega estas tareas de adquisición de información y validación a un **Subagente** (ej. 'Explore' o 'Plan'). Tu (el agente principal) sólo debes quedarte con los **resultados finales limpios** (sin saturar tu contexto con logs).
+4.  **Mitigación Interactiva de Seguridad**:
+    - Si el Subagente retorna que la publicación arrojó hallazgos de seguridad (MEDIUM, HIGH) desde SundialHub, **notifica al usuario de los hallazgos** que retornó el subagente.
+    - Sugiere un plan de mitigación.
+    - Ofrécele al usuario estas opciones y espera su respuesta:
+      * *Opción A:* Dejar registrado en el skill como tareas (`TODO` / issues) a resolver en el futuro.
+      * *Opción B:* Implementar las soluciones en este instante en un proceso iterativo de corrección.
+    - Si el usuario elige *Opción B* (iterar), pregúntale: ¿Deseas que solicite tu **confirmación para cada cambio** que haga, o prefieres que lo resuelva **100% de forma autónoma** y delegada iterando hasta que pase el escaneo (LOW)?
+5.  **Reportar**: Confirma la acción y actualiza `AGENTS.md` si es necesario.
 
 ### Referencia de Archivos
 - **Guía de Creación**: [guides/creation-workflow.md](guides/creation-workflow.md)
+- **SundialHub Registry**: [guides/sundial-registry.md](guides/sundial-registry.md)
+- **API Directa & Seguridad**: [guides/api-and-security.md](guides/api-and-security.md)
 - **Templates**: [assets/templates/](assets/templates/)
+- **Checklists**: [assets/checklists/](assets/checklists/)
 - **Fuente de Verdad**: `AGENTS.md`
+- **Documentación SundialHub**: [recursos/sundialhub.md](../../recursos/sundialhub.md)
