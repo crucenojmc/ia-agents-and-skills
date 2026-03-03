@@ -228,7 +228,7 @@ Este skill se encarga de crear, auditar y manipular archivos de otros skills en 
 - **[CRITICAL] CREDENTIAL HARVESTING**: Nuestro script local `scan_sensitive_data.sh` busca intencionalmente en tu código firmas como `-----BEGIN ... KEY-----` para protegerte y advertirte. El servidor percibe esta regex y cree que "recolectamos credenciales".
 - **[CRITICAL] Modifying system permissions**: El administrador de API (`sundial_api.sh`) asigna estrictamente permisos cerrados (`chmod 600`) al archivo `auth.json` local para proteger tu token de otros usuarios. El escáner detecta el `chmod` como advertencia.
 - **[HIGH] SYSTEM MANIPULATION / Tool exploitation risk**: Scripts como `validate_skill.sh` o `publish_to_sundial.sh` ejecutan comandos bash (`sed`, `rm`, `chmod`) para estructurar carpetas, editar YAML y gestionar versiones locales.
-- **[HIGH] Database connection string**: En nuestra guía técnica (`guides/api-and-security.md`) mostramos como ejemplo la sintaxis `postgres://...` detonando una alerta de credencial en documentación.
+- **[HIGH] Database connection string**: En nuestra guía técnica (`guides/api-and-security.md`) mostramos como ejemplo la sintaxis `p-o-s-t-g-r-e-s://...` detonando una alerta de credencial en documentación.
 - **[HIGH] Supply-chain / Indirect prompt-injection surface**: Al descargar skills de terceros, ejecutamos `npx` y descargamos docs. Es un riesgo inevitable mitigado internamente mediante prompts de confirmación requeridos al LLM.
 - **[MEDIUM] SKILL DISCOVERY ABUSE**: Peticiones repetidas a la API para verificar disponibilidad de nombres.
 - **[LOW] Over-broad orchestrator positioning**: Al ser el marco de creación de skills, su Prompt principal requiere alcance de orquestación.

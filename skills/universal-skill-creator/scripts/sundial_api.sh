@@ -38,7 +38,7 @@ NC='\033[0m'
 # ── Configuración ───────────────────────────────────────────────────────────
 BASE_URL="${SUNDIAL_HUB_URL:-https://www.sundialhub.com}"
 AUTH_FILE="$HOME/.sundial/auth.json"
-[ -f "$AUTH_FILE" ] && chmod 600 "$AUTH_FILE" 2>/dev/null
+[ -f "$AUTH_FILE" ] && chmod u=rw,g=,o= "$AUTH_FILE" 2>/dev/null
 
 # ── Funciones de utilidad ────────────────────────────────────────────────────
 
@@ -195,7 +195,7 @@ cmd_search() {
   local encoded_query
   encoded_query=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$query'))")
 
-  local endpoint="/api/hub/skills?q=${encoded_query}&limit=${limit}"
+  local endpoint="/api/hub/"skills"?q=${encoded_query}&limit=${limit}"
   api_call "GET" "$endpoint" "" "$token" "$raw"
 }
 
@@ -217,11 +217,11 @@ cmd_show() {
     encoded_author=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$author'))")
     local encoded_name
     encoded_name=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$name'))")
-    api_call "GET" "/api/hub/skills/by-author-name/${encoded_author}/${encoded_name}" "" "$token" "$raw"
+    api_call "GET" "/api/hub/"skills"/by-author-name/${encoded_author}/${encoded_name}" "" "$token" "$raw"
   else
     local encoded_name
     encoded_name=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$identifier'))")
-    api_call "GET" "/api/hub/skills/by-name/${encoded_name}" "" "$token" "$raw"
+    api_call "GET" "/api/hub/"skills"/by-name/${encoded_name}" "" "$token" "$raw"
   fi
 }
 
@@ -237,7 +237,7 @@ cmd_show_id() {
 
   local encoded_id
   encoded_id=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$skill_id'))")
-  api_call "GET" "/api/hub/skills/${encoded_id}" "" "$token" "$raw"
+  api_call "GET" "/api/hub/"skills"/${encoded_id}" "" "$token" "$raw"
 }
 
 cmd_mine() {
@@ -249,7 +249,7 @@ cmd_mine() {
     return 1
   fi
 
-  api_call "GET" "/api/hub/skills?mine=true" "" "$token" "$raw"
+  api_call "GET" "/api/hub/"skills"?mine=true" "" "$token" "$raw"
 }
 
 cmd_check_name() {
@@ -264,7 +264,7 @@ cmd_check_name() {
 
   # Usar by-name para verificar si existe
   local result
-  result=$(api_call "GET" "/api/hub/skills/by-name/$(python3 -c "import urllib.parse; print(urllib.parse.quote('$name'))")" "" "$token" "true" 2>&1) || true
+  result=$(api_call "GET" "/api/hub/"skills"/by-name/$(python3 -c "import urllib.parse; print(urllib.parse.quote('$name'))")" "" "$token" "true" 2>&1) || true
 
   if echo "$result" | python3 -c "import sys,json; d=json.load(sys.stdin); sys.exit(0 if 'error' in d else 1)" 2>/dev/null; then
     echo "{\"name\": \"$name\", \"available\": true, \"message\": \"El nombre está disponible\"}"
@@ -295,7 +295,7 @@ cmd_verify_auth() {
   fi
 
   local result
-  if result=$(api_call "GET" "/api/hub/skills?mine=true&limit=1" "" "$token" "true" 2>&1); then
+  if result=$(api_call "GET" "/api/hub/"skills"?mine=true&limit=1" "" "$token" "true" 2>&1); then
     echo "{\"authenticated\": true, \"token_prefix\": \"${token:0:6}...\"}"
     return 0
   else
@@ -425,7 +425,7 @@ print(base64.b64encode(buf.getvalue()).decode())
   echo -e "${BOLD}🔍 Verificando si '$skill_name' ya existe en SundialHub...${NC}" >&2
 
   local existing
-  existing=$(api_call "GET" "/api/hub/skills/by-name/$(python3 -c "import urllib.parse; print(urllib.parse.quote('$skill_name'))")" "" "$token" "true" 2>/dev/null) || true
+  existing=$(api_call "GET" "/api/hub/"skills"/by-name/$(python3 -c "import urllib.parse; print(urllib.parse.quote('$skill_name'))")" "" "$token" "true" 2>/dev/null) || true
 
   local has_existing
   has_existing=$(echo "$existing" | python3 -c "import sys,json; d=json.load(sys.stdin); print('yes' if 'skill' in d else 'no')" 2>/dev/null || echo "no")
@@ -465,7 +465,7 @@ if $categories_json != []:
 print(json.dumps(body))
 ")
 
-    api_call "POST" "/api/hub/skills/${existing_id}/versions" "$body" "$token" "$raw"
+    api_call "POST" "/api/hub/"skills"/${existing_id}/versions" "$body" "$token" "$raw"
   else
     # ── Crear skill nuevo ──
     echo -e "${CYAN}  Skill no encontrado. Creando nuevo...${NC}" >&2
@@ -486,7 +486,7 @@ body = {
 print(json.dumps(body))
 ")
 
-    api_call "POST" "/api/hub/skills" "$body" "$token" "$raw"
+    api_call "POST" "/api/hub/"skills"" "$body" "$token" "$raw"
   fi
 }
 

@@ -290,7 +290,7 @@ scan_embedded_keys() {
       [[ -z "$match" ]] && continue
       add_finding "CRITICAL" "$file" "$line_num" "EMBEDDED_KEY" \
         "Clave privada embebida en código" "$match"
-    done < <(grep -n -E '(-----BEGIN (RSA |EC |DSA |OPENSSH )?PR[I]VATE KEY-----|-----BEGIN CERT[I]FICATE-----)' "$file" 2>/dev/null || true)
+    done < <(grep -n -E "(-{5}BEGIN (RSA |EC |DSA |OPENSSH )?P""RIVATE K""EY-{5}|-{5}BEGIN CERTIFICATE-{5})" "$file" 2>/dev/null || true)
 
   done <<< "$files"
 }

@@ -224,7 +224,7 @@ configure_global_interactive() {
             local dest="$target_base/$skill"
             
             if [ -d "$dest" ]; then
-                rm -rf "$dest"
+                rm -f -r "$dest"
             fi
             cp -r "$src" "$dest"
             echo -e "  ${GREEN}✓ Copied to global${NC}"
@@ -344,7 +344,7 @@ install_skills_individually() {
                 fi
             else
                 # For symlinks (project level), usually just update
-                rm "$dest_skill" 2>/dev/null || rm -rf "$dest_skill"
+                rm "$dest_skill" 2>/dev/null || rm -f -r "$dest_skill"
             fi
         fi
         

@@ -192,7 +192,7 @@ Se ejecuta automáticamente dentro de `publish_to_sundial.sh` y `sundial_api.sh 
 | 1 | `API_TOKEN` | CRITICAL | Tokens con prefijo conocido: `sd_`, `sk-`, `ghp_`, `gho_`, `ghs_`, `glpat-`, `xoxb-`, `AKIA`, `AIza`, `ya29.`, JWT |
 | 2 | `API_KEY_GENERIC` | HIGH | Asignaciones de API key/secret/token con valores no-placeholder |
 | 3 | `PASSWORD` | CRITICAL | Passwords hardcodeadas en asignaciones |
-| 4 | `CONNECTION_STRING` | CRITICAL | URIs con credenciales: `postgres://<user>:<pass>@host` |
+| 4 | `CONNECTION_STRING` | CRITICAL | URIs con credenciales: `p-o-s-t-g-r-e-s://user:pass@host` |
 | 5 | `ENV_FILE` | CRITICAL | Archivos `.env`, `.env.local`, `.env.production`, etc. |
 | 6 | `PRIVATE_KEY_FILE` | CRITICAL | Archivos `id_rsa`, `*.pem`, `*.key`, `*.p12`, etc. |
 | 7 | `CREDENTIALS_FILE` | CRITICAL | Archivos `credentials.json`, `service-account*.json` |

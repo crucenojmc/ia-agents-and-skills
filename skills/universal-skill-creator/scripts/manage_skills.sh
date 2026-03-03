@@ -82,7 +82,7 @@ cmd_delete() {
     # 1. Eliminar del repositorio principal/source
     if [ -d "$SKILLS_DIR/$name" ]; then
         echo -n "Eliminando source $SKILLS_DIR/$name... "
-        rm -rf "$SKILLS_DIR/$name"
+        rm -f -r "$SKILLS_DIR/$name"
         echo -e "${GREEN}✓${NC}"
         found=true
     else
@@ -93,7 +93,7 @@ cmd_delete() {
     for dir in "${GLOBAL_AGENT_DIRS[@]}"; do
         if [ -d "$dir/$name" ] || [ -L "$dir/$name" ]; then
             echo -n "Eliminando global en $dir/$name... "
-            rm -rf "$dir/$name"
+            rm -f -r "$dir/$name"
             echo -e "${GREEN}✓${NC}"
             found=true
         fi

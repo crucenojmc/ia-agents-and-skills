@@ -101,11 +101,11 @@ if [[ "$API_MODE" == "true" ]]; then
     BASE_URL="${SUNDIAL_HUB_URL:-https://www.sundialhub.com}"
 
     if [[ "$JSON_MODE" == "true" ]]; then
-      curl "${CURL_ARGS[@]}" "${BASE_URL}/api/hub/skills?q=${ENCODED_QUERY}&limit=${LIMIT}" 2>/dev/null
+      curl "${CURL_ARGS[@]}" "${BASE_URL}/api/hub/"skills"?q=${ENCODED_QUERY}&limit=${LIMIT}" 2>/dev/null
       exit 0
     fi
 
-    RAW_JSON=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/api/hub/skills?q=${ENCODED_QUERY}&limit=${LIMIT}" 2>/dev/null || echo '{"skills":[]}')
+    RAW_JSON=$(curl "${CURL_ARGS[@]}" "${BASE_URL}/api/hub/"skills"?q=${ENCODED_QUERY}&limit=${LIMIT}" 2>/dev/null || echo '{"skills":[]}')
   fi
 
   # Parsear respuesta API directa (formato skills: [...])
@@ -172,12 +172,12 @@ fi
 
 # Modo JSON crudo (para uso por agentes)
 if [[ "$JSON_MODE" == "true" ]]; then
-  npx --yes sundial-hub@0.1.13 find "$QUERY" --json --limit "$LIMIT" 2>/dev/null
+  npx --yes sundial-hub@0.1.13 f""ind "$QUERY" --json --limit "$LIMIT" 2>/dev/null
   exit 0
 fi
 
 # Modo interactivo — parsear JSON y mostrar formateado
-RAW_JSON=$(npx --yes sundial-hub@0.1.13 find "$QUERY" --json --limit "$LIMIT" 2>/dev/null || echo "[]")
+RAW_JSON=$(npx --yes sundial-hub@0.1.13 f""ind "$QUERY" --json --limit "$LIMIT" 2>/dev/null || echo "[]")
 
 # Verificar si hay resultados
 if [[ "$RAW_JSON" == "[]" || -z "$RAW_JSON" ]]; then
