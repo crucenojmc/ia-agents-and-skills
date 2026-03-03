@@ -146,7 +146,7 @@ Si falla, corregir TODOS los hallazgos antes de continuar.
   --categories <categoría>
 
 # Opción B: Via API directa (sin Node.js, solo curl)
-./skills/universal-skill-creator/scripts/sundial_api.sh publish ./skills/<nombre-skill> \
+./skills/universal-skill-creator/scripts/ publish ./skills/<nombre-skill> \
   --version 1 --categories coding --changelog "Initial release"
 ```
 

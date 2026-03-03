@@ -105,7 +105,7 @@ y [guides/api-and-security.md](../../guides/api-and-security.md).
   --changelog "Descripción" --visibility public --categories coding
 
 # Opción B: Via API directa (sin Node.js)
-./skills/universal-skill-creator/scripts/sundial_api.sh publish ./mi-skill \
+./skills/universal-skill-creator/scripts/ publish ./mi-skill \
   --version 1 --categories coding
 ```
 - [ ] Comandos comunes

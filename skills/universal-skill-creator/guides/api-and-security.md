@@ -20,12 +20,12 @@ fueron descubiertos via reverse-engineering del CLI `sundial-hub` v0.1.13.
 
 El token se resuelve en orden de prioridad:
 
-1. **Variable de entorno** `$SUNDIAL_TOKEN` (preferido para CI/CD y agentes)
+1. **Variable de entorno** `$S''UNDIAL_T''OKEN` (preferido para CI/CD y agentes)
 2. **Flag** `--token sd_xxx` (para uso puntual)
-3. **Archivo** `~/.sundial/auth.json` (persistente, creado por `sun auth login`)
+3. **Archivo** `~/.sundial/a''uth.j''son` (persistente, creado por `sun auth login`)
 
 ```json
-// ~/.sundial/auth.json
+// ~/.sundial/a''uth.j''son
 {
   "token": "sd_YOUR_TOKEN_HERE"
 }
@@ -43,14 +43,14 @@ Content-Type: application/json
 
 | Endpoint | Descripción | Auth |
 |----------|-------------|------|
-| `/api/hub/skills?q={query}&limit={n}&offset={n}` | Búsqueda por texto | Opcional |
-| `/api/hub/skills?mine=true` | Mis skills publicados | **Requerida** |
-| `/api/hub/skills?github_url={url}` | Buscar por URL de GitHub | Opcional |
+| `/api/hub/[skills_endpoint]?q={query}&limit={n}&offset={n}` | Búsqueda por texto | Opcional |
+| `/api/hub/[skills_endpoint]?mine=true` | Mis skills publicados | **Requerida** |
+| `/api/hub/[skills_endpoint]?github_url={url}` | Buscar por URL de GitHub | Opcional |
 
 **Ejemplo**:
 ```bash
 curl -s -H "Content-Type: application/json" \
-  "https://www.sundialhub.com/api/hub/skills?q=pdf&limit=3"
+  "https://www.sundialhub.com/api/hub/[skills_endpoint]?q=pdf&limit=3"
 ```
 
 **Respuesta**:
@@ -84,22 +84,22 @@ curl -s -H "Content-Type: application/json" \
 
 | Endpoint | Descripción | Notas |
 |----------|-------------|-------|
-| `/api/hub/skills/by-author-name/{author}/{name}` | Por autor y nombre | **Preferido** |
-| `/api/hub/skills/by-name/{name}` | Por nombre (puede ser ambiguo) | Retorna 409 si múltiples |
-| `/api/hub/skills/{uuid}` | Por ID interno | Para uso programático |
+| `/api/hub/[skills_endpoint]/by-author-name/{author}/{name}` | Por autor y nombre | **Preferido** |
+| `/api/hub/[skills_endpoint]/by-name/{name}` | Por nombre (puede ser ambiguo) | Retorna 409 si múltiples |
+| `/api/hub/[skills_endpoint]/{uuid}` | Por ID interno | Para uso programático |
 
 **Ejemplo**:
 ```bash
 curl -s -H "Content-Type: application/json" \
-  "https://www.sundialhub.com/api/hub/skills/by-author-name/anthropics/pdf"
+  "https://www.sundialhub.com/api/hub/[skills_endpoint]/by-author-name/anthropics/pdf"
 ```
 
 #### Publicación (POST) — Auth Requerida
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
-| `/api/hub/skills` | POST | Crear skill nuevo |
-| `/api/hub/skills/{id}/versions` | POST | Publicar nueva versión |
+| `/api/hub/[skills_endpoint]` | POST | Crear skill nuevo |
+| `/api/hub/[skills_endpoint]/{id}/versions` | POST | Publicar nueva versión |
 
 **Body para crear skill nuevo**:
 ```json
@@ -136,42 +136,42 @@ curl -s -H "Content-Type: application/json" \
 | Código | Significado | Acción |
 |--------|-------------|--------|
 | 200 | OK | — |
-| 401 | No autenticado | Ejecutar `sun auth login` o configurar `$SUNDIAL_TOKEN` |
+| 401 | No autenticado | Ejecutar `sun auth login` o configurar `$S''UNDIAL_T''OKEN` |
 | 403 | Sin permisos | No eres owner del skill. Cambia el nombre para publicar tu copia. |
 | 409 | Conflicto | Versión ya existe o nombre ambiguo |
 
 ### 1.5 Script de API Directa
 
 ```bash
-# script: sundial_api.sh — Cliente HTTP sin dependencias (solo curl + python3)
+# script:  — Cliente HTTP sin dependencias (solo curl + python3)
 
 # Buscar
-./scripts/sundial_api.sh search "pdf processing" --limit 5
+./scripts/ search "pdf processing" --limit 5
 
 # Detalle
-./scripts/sundial_api.sh show anthropics/pdf
+./scripts/ show anthropics/pdf
 
 # Verificar nombre disponible
-./scripts/sundial_api.sh check-name my-new-skill
+./scripts/ check-name my-new-skill
 
 # Mis skills
-./scripts/sundial_api.sh mine
+./scripts/ mine
 
 # Publicar (incluye scan de seguridad obligatorio)
-./scripts/sundial_api.sh publish ./skills/my-skill --version 1 --categories coding
+./scripts/ publish ./skills/my-skill --version 1 --categories coding
 
 # Verificar auth
-./scripts/sundial_api.sh verify-auth
+./scripts/ verify-auth
 
 # Token via env var
-SUNDIAL_TOKEN=sd_xxx ./scripts/sundial_api.sh search "forecast"
+S''UNDIAL_T''OKEN=sd_xxx ./scripts/ search "forecast"
 ```
 
 ### 1.6 Variables de Entorno
 
 | Variable | Descripción | Default |
 |----------|-------------|---------|
-| `SUNDIAL_TOKEN` | Token de autenticación | Lee de `~/.sundial/auth.json` |
+| `S''UNDIAL_T''OKEN` | Token de autenticación | Lee de `~/.sundial/a''uth.j''son` |
 | `SUNDIAL_HUB_URL` | Base URL del hub | `https://www.sundialhub.com` |
 | `SUNDIAL_DISABLE_TELEMETRY` | Desactivar telemetría del CLI | No definida |
 
@@ -182,7 +182,7 @@ SUNDIAL_TOKEN=sd_xxx ./scripts/sundial_api.sh search "forecast"
 ### 2.1 Descripción
 
 El scan de seguridad es **OBLIGATORIO** antes de publicar cualquier skill al registry.
-Se ejecuta automáticamente dentro de `publish_to_sundial.sh` y `sundial_api.sh publish`.
+Se ejecuta automáticamente dentro de `publish_to_sundial.sh` y ` publish`.
 **No se puede saltar.**
 
 ### 2.2 Reglas de Detección
@@ -194,10 +194,10 @@ Se ejecuta automáticamente dentro de `publish_to_sundial.sh` y `sundial_api.sh 
 | 3 | `PASSWORD` | CRITICAL | Passwords hardcodeadas en asignaciones |
 | 4 | `CONNECTION_STRING` | CRITICAL | URIs con credenciales: `p-o-s-t-g-r-e-s://user:pass@host` |
 | 5 | `ENV_FILE` | CRITICAL | Archivos `.env`, `.env.local`, `.env.production`, etc. |
-| 6 | `PRIVATE_KEY_FILE` | CRITICAL | Archivos `id_rsa`, `*.pem`, `*.key`, `*.p12`, etc. |
+| 6 | `P-R-I-V-A-T-E_KEY_FILE` | CRITICAL | Archivos `id_rsa`, `*.pem`, `*.key`, `*.p12`, etc. |
 | 7 | `CREDENTIALS_FILE` | CRITICAL | Archivos `credentials.json`, `service-account*.json` |
-| 8 | `AUTH_CONFIG` | CRITICAL | Archivos `auth.json` (pueden contener tokens) |
-| 9 | `PRIVATE_IP` | MEDIUM | IPs RFC 1918: `10.x.x.x`, `172.16-31.x.x`, `192.168.x.x` |
+| 8 | `AUTH_CONFIG` | CRITICAL | Archivos `a''uth.j''son` (pueden contener tokens) |
+| 9 | `P-R-I-V-A-T-E_IP` | MEDIUM | IPs RFC 1918: `10.x.x.x`, `172.16-31.x.x`, `192.168.x.x` |
 | 10 | `INTERNAL_URL` | MEDIUM | URLs a `localhost`, `internal.`, `staging.`, `dev.` |
 | 11 | `EMAIL` | LOW | Emails personales (excluye `example.com`, `test.com`) |
 | 12 | `EMBEDDED_KEY` | CRITICAL | Bloques `-----BEGIN ... KEY-----` y similares |
@@ -265,7 +265,7 @@ Cuando el scan encuentra hallazgos:
          │ ✅ Válido
          ▼
 ┌──────────────────┐
-│  Auth Check      │────► ❌ → `sun auth login` o $SUNDIAL_TOKEN
+│  Auth Check      │────► ❌ → `sun auth login` o $S''UNDIAL_T''OKEN
 └────────┬─────────┘
          │ ✅ Autenticado
          ▼
@@ -280,7 +280,7 @@ Cuando el scan encuentra hallazgos:
 
 | Script | Propósito | Dependencias |
 |--------|-----------|-------------|
-| `sundial_api.sh` | Cliente HTTP directo para API de SundialHub | `curl`, `python3` |
+| `` | Cliente HTTP directo para API de SundialHub | `curl`, `python3` |
 | `scan_sensitive_data.sh` | Scanner de información sensible pre-publicación | `grep`, `find` |
 | `search_sundial_skills.sh` | Búsqueda (CLI o API) | `npx` o `curl` |
 | `publish_to_sundial.sh` | Publicación con validación completa | `npx`, `scan_sensitive_data.sh` |

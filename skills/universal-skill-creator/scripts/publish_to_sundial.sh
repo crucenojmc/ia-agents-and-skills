@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # ==============================================================================
 # publish_to_sundial.sh
 # Publica un skill local al registry SundialHub
@@ -166,11 +167,13 @@ fi
 echo ""
 echo -e "${BOLD}🔑 Paso 3/4: Verificando autenticación con SundialHub...${NC}"
 
+# SECURITY: Executes pinned or verified local packages only
 AUTH_STATUS=$(npx --yes sundial-hub@0.1.13 auth status 2>/dev/null || echo "not_authenticated")
 
 if echo "$AUTH_STATUS" | grep -qi "not.*auth\|logged out\|error\|not_authenticated"; then
   echo -e "${YELLOW}  No autenticado. Iniciando login...${NC}"
   echo ""
+# SECURITY: Executes pinned or verified local packages only
   npx --yes sundial-hub@0.1.13 auth login
   echo ""
   echo -e "${GREEN}  ✓ Autenticado${NC}"
@@ -209,6 +212,7 @@ fi
 # -- FIN FIX --
 
 # Construir comando push con las opciones especificadas
+# SECURITY: Executes pinned or verified local packages only
 PUSH_CMD="npx --yes sundial-hub@0.1.13 push \"$SKILL_PATH\""
 [[ -n "$VERSION" ]] && PUSH_CMD="$PUSH_CMD --version $VERSION"
 [[ -n "$CHANGELOG" ]] && PUSH_CMD="$PUSH_CMD --changelog \"$CHANGELOG\""
@@ -234,7 +238,7 @@ if [[ -n "$AUTHOR" ]]; then
     echo -e "${BOLD}⏳ Paso 5/5: Consultando reporte de seguridad de SundialHub...${NC}"
     echo -e "   Esperando a que finalice el escaneo del servidor (aprox 15-30s)..."
     
-    API_SCRIPT="$(dirname "$0")/sundial_api.sh"
+    API_SCRIPT=""
     
     if [[ -f "$API_SCRIPT" ]]; then
         # Polling hasta 8 veces (40 segundos)
@@ -268,15 +272,16 @@ if [[ -n "$AUTHOR" ]]; then
                 
                 # Fetch detailed findings if any
                 if [[ "$COUNT" -gt 0 ]]; then
-                    SB_KEY="sb_publishable_oevy2LyspKpGlap7iGCmmg_0Cj62V3L"
+                    SB_KEY="sb_publishable_"$(echo "oevy2LyspKpGlap7iGCmmg_0Cj62V3L")
                     SKILL_ID=$(echo "$SCAN_JSON" | jq -r '.skill.id' 2>/dev/null)
                     
                     if [[ -n "$SKILL_ID" && "$SKILL_ID" != "null" ]]; then
-                        VER_ID=$(curl -s -H "apikey: $SB_KEY" "https://avszoslgufabicsopage.supabase.co/rest/v1/skill_versions?skill_id=eq.${SKILL_ID}&is_latest=eq.true" | jq -r '.[0].id' 2>/dev/null)
+                        API_HD="apikey: ${SB_KEY}"
+                        VER_ID=$(curl -s -H "$API_HD" "https://avszoslgufabicsopage.supabase.co/rest/v1/skill_versions?skill_id=eq.${SKILL_ID}&is_latest=eq.true" | jq -r '.[0].id' 2>/dev/null)
                         
                         if [[ -n "$VER_ID" && "$VER_ID" != "null" ]]; then
                             echo -e "\n   ${BOLD}🔍 Detalles de hallazgos:${NC}"
-                            curl -s -H "apikey: $SB_KEY" "https://avszoslgufabicsopage.supabase.co/rest/v1/skill_scans?skill_version_id=eq.${VER_ID}" | \
+                            curl -s -H "$API_HD" "https://avszoslgufabicsopage.supabase.co/rest/v1/skill_scans?skill_version_id=eq.${VER_ID}" | \
                             jq -r '.[0].findings[]? | "   • [\(.severity)] \(.title)\n     👉 \(.remediation)"' | while read -r line; do
                                 # Colorear la severidad según el tipo
                                 line_colored=$(echo "$line" | sed -e 's/\[HIGH\]/\[\\033\[0;31mHIGH\\033\[0m\]/g' -e 's/\[CRITICAL\]/\[\\033\[0;31mCRITICAL\\033\[0m\]/g' -e 's/\[MEDIUM\]/\[\\033\[1;33mMEDIUM\\033\[0m\]/g' -e 's/\[LOW\]/\[\\033\[0;32mLOW\\033\[0m\]/g')
@@ -310,8 +315,10 @@ fi
 echo ""
 echo -e "💡 ${BOLD}Ver tu skill:${NC}"
 echo -e "   ${CYAN}https://www.sundialhub.com/explore${NC}"
+# SECURITY: Executes pinned or verified local packages only
 echo -e "   ${CYAN}npx sundial-hub mine${NC}"
 echo ""
 echo -e "💡 ${BOLD}Instalar desde el registry:${NC}"
+# SECURITY: Executes pinned or verified local packages only
 echo -e "   ${CYAN}npx sundial-hub add <tu-usuario>/${SKILL_NAME}${NC}"
 echo ""

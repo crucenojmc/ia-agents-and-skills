@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 #
 # validate_skill.sh
 # Valida la estructura y contenido básico de un skill

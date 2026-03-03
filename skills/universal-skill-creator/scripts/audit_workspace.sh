@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 #
 # audit_workspace.sh
 # Escanea la carpeta skills/ y audita todos los skills encontrados
@@ -31,7 +32,6 @@ else
         ".gemini/skills"
         ".agent/skills"
         ".codex/skills"
-        "~/.copilot/skills" # Check home just in case? No, usually audit is for project.
     )
 
     for root in "${POTENTIAL_ROOTS[@]}"; do

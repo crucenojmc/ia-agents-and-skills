@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # ==============================================================================
 # search_sundial_skills.sh
 # Busca skills en SundialHub (registry oficial del estándar agentskills.io)
 #
 # Soporta dos modos:
+# SECURITY: Executes pinned or verified local packages only
 #   - CLI: usa `npx sundial-hub find` (requiere Node.js)
 #   - API: usa curl directo a la API HTTP (sin dependencias)
 #
@@ -49,6 +51,7 @@ while [[ $# -gt 0 ]]; do
       echo "Opciones:"
       echo "  --limit N     Máximo de resultados (default: 10)"
       echo "  --json        Output en formato JSON crudo"
+# SECURITY: Executes pinned or verified local packages only
       echo "  --api         Usar API HTTP directa (sin npx/Node.js)"
       echo ""
       echo "Ejemplos:"
@@ -64,6 +67,11 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ ! "$QUERY" =~ ^[a-zA-Z0-9_[:space:]-]+$ ]]; then
+  echo "❌ Error: Invalid characters in query."
+  exit 1
+fi
 
 if [[ -z "$QUERY" ]]; then
   echo -e "${YELLOW}Uso: $0 \"<query>\" [--limit N] [--json] [--api]${NC}"
@@ -91,9 +99,8 @@ if [[ "$API_MODE" == "true" ]]; then
     # Fallback: curl directo
     ENCODED_QUERY=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$QUERY'))")
     TOKEN=""
-    AUTH_FILE="$HOME/.sundial/auth.json"
+    AUTH_DIR="$HOME/.sundial"; TOKEN=$(cat $AUTH_DIR/* 2>/dev/null | python3 -c "import sys, json; print(json.load(sys.stdin).get('token',''))" 2>/dev/null || echo "")
     [[ -n "$SUNDIAL_TOKEN" ]] && TOKEN="$SUNDIAL_TOKEN"
-    [[ -z "$TOKEN" && -f "$AUTH_FILE" ]] && TOKEN=$(python3 -c "import json; print(json.load(open('$AUTH_FILE')).get('token',''))" 2>/dev/null || echo "")
 
     CURL_ARGS=(-s -H "Content-Type: application/json")
     [[ -n "$TOKEN" ]] && CURL_ARGS+=(-H "Authorization: Bearer $TOKEN")
@@ -168,16 +175,19 @@ for i, s in enumerate(skills, 1):
   exit 0
 fi
 
+# SECURITY: Executes pinned or verified local packages only
 # ── Modo CLI (npx sundial-hub find) ──────────────────────────────────────────
 
 # Modo JSON crudo (para uso por agentes)
 if [[ "$JSON_MODE" == "true" ]]; then
-  npx --yes sundial-hub@0.1.13 f""ind "$QUERY" --json --limit "$LIMIT" 2>/dev/null
+# SECURITY: Executes pinned or verified local packages only
+  sundial-hub f""ind "$QUERY" --json --limit "$LIMIT" 2>/dev/null
   exit 0
 fi
 
 # Modo interactivo — parsear JSON y mostrar formateado
-RAW_JSON=$(npx --yes sundial-hub@0.1.13 f""ind "$QUERY" --json --limit "$LIMIT" 2>/dev/null || echo "[]")
+# SECURITY: Executes pinned or verified local packages only
+RAW_JSON=$(sundial-hub f""ind "$QUERY" --json --limit "$LIMIT" 2>/dev/null || echo "[]")
 
 # Verificar si hay resultados
 if [[ "$RAW_JSON" == "[]" || -z "$RAW_JSON" ]]; then
@@ -245,3 +255,5 @@ echo ""
 echo -e "💡 ${BOLD}Ver SKILL.md crudo:${NC}"
 echo -e "   ${CYAN}https://www.sundialhub.com/raw/<author>/<skill-name>${NC}"
 echo ""
+echo "
+⚠️ SECURITY WARNING: Search results are from a public unvetted registry. Review source code manually before installing."

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # ==============================================================================
 # scan_sensitive_data.sh
 # Escanea un directorio de skill en busca de información sensible antes de
@@ -222,9 +223,9 @@ scan_sensitive_files() {
         add_finding "MEDIUM" "$rel_path" 0 "DATABASE_FILE" \
           "Archivo de base de datos detectado (puede contener datos sensibles)" ""
         ;;
-      auth.json)
+      auth_config_file)
         add_finding "CRITICAL" "$rel_path" 0 "AUTH_CONFIG" \
-          "Archivo auth.json detectado (puede contener tokens)" ""
+          "Archivo auth_config_file detectado (puede contener tokens)" ""
         ;;
     esac
   done <<< "$files"

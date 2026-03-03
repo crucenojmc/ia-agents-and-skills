@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 #
 # manage_skills.sh
 # Herramienta de gestión para eliminar skills y limpiar huérfanos.

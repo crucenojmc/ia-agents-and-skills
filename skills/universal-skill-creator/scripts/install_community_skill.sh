@@ -1,65 +1,42 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# install_community_skill.sh
-# Instala un skill de la comunidad skills.sh para Antigravity
-# ==============================================================================
+set -euo pipefail
 
-set -e
+# Interactively ask for confirmation before installation (LLM_PROMPT_INJECTION mitigation)
+echo "==========================================="
+echo "=== SECURITY SANDBOX REVIEW ==="
+echo "⚠️ WARNING: You are attempting to download instructions/tools from $1."
+echo "Remote skills can contain indirect prompt injection or unintended commands."
+echo "Please manually review the skill source repository before continuing."
+echo -n "Do you approve installing this remote code to your LOCAL project only? (y/N): "
+read confirm
+if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
+  echo "Installation aborted by user for security reasons."
+  exit 1
+fi
 
 usage() {
-  echo "Uso: $0 <repo> <skill-name> [opciones]"
-  echo ""
-  echo "Argumentos:"
+  echo "Uso: $0 <repo> <skill-name>"
   echo "  repo        Repositorio en formato owner/repo (ej: anthropics/skills)"
   echo "  skill-name  Nombre del skill a instalar (ej: pdf)"
-  echo ""
-  echo "Opciones:"
-  echo "  -g, --global    Instalar globalmente en ~/.gemini/antigravity/skills/"
-  echo "  -h, --help      Mostrar esta ayuda"
-  echo ""
-  echo "Ejemplos:"
-  echo "  $0 anthropics/skills pdf"
-  echo "  $0 vercel-labs/agent-skills frontend-design --global"
   exit 1
 }
 
-# Parsear argumentos
-REPO=""
-SKILL=""
-GLOBAL=""
-
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    -g|--global)
-      GLOBAL="-g"
-      shift
-      ;;
-    -h|--help)
-      usage
-      ;;
-    *)
-      if [[ -z "$REPO" ]]; then
-        REPO=$1
-      elif [[ -z "$SKILL" ]]; then
-        SKILL=$1
-      fi
-      shift
-      ;;
-  esac
-done
-
-if [[ -z "$REPO" || -z "$SKILL" ]]; then
-  echo "❌ Error: Faltan argumentos requeridos"
-  echo ""
+if [[ $# -lt 2 ]]; then
   usage
 fi
 
-echo "📦 Instalando skill '$SKILL' desde '$REPO'..."
-echo "   Destino: ${GLOBAL:+Global (~/.gemini/antigravity/skills/)}${GLOBAL:-Local (.agent/skills/)}"
-echo ""
+REPO=$1
+SKILL=$2
 
-# Ejecutar instalación
-npx -y skills add "$REPO" --skill "$SKILL" -a antigravity $GLOBAL -y
+# Input validation for command injection prevention
+if [[ ! "$REPO" =~ ^[a-zA-Z0-9_/-]+$ ]] || [[ ! "$SKILL" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+  echo "❌ Error: Invalid characters in identifier. Possible injection detected."
+  exit 1
+fi
 
-echo ""
-echo "✅ Skill '$SKILL' instalado correctamente para Antigravity"
+echo "📦 Instalando skill '$SKILL' desde '$REPO' de forma LOCAL (Restricted)..."
+
+# SECURITY: Executes local constrained command for project-only install
+skills add "$REPO" --skill "$SKILL" -a antigravity --cwd ./skills -y
+
+echo "✅ Skill '$SKILL' instalado localmente."
