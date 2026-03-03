@@ -196,7 +196,21 @@ SUNDIAL_TOKEN=sd_xxx ./skills/universal-skill-creator/scripts/sundial_api.sh sea
 
 ---
 
-## 🚨 Reglas Críticas para Automatización (IA & CI/CD)
+## � Autenticación y Provisión de Token Seguro
+
+Para interactuar con las características avanzadas de SundialHub (como publicación de skills o consulta de endpoints privados), el sistema requerirá autenticación. TÚ, como agente, debes guiar al usuario de forma segura.
+
+**Instrucciones que debes proveer al usuario (SIEMPRE que falte autenticación):**
+1. **NO le pidas que pegue el token en el chat.** Eso comprometería sus credenciales en los historiales del LLM.
+2. Indícale que genere un token desde: `https://www.sundialhub.com/settings/tokens`.
+3. Dale estas **tres opciones** seguras para que provea el Token al entorno:
+   - **Opción A (Recomendada):** Crear manualmente el archivo `~/.sundial/auth.json` e incluir `{"token": "sd_..."}` en su entorno local.
+   - **Opción B:** Ejecutar en su propia terminal `npx sundial-hub auth login` y seguir el prompt.
+   - **Opción C:** Añadir y exportar `SUNDIAL_TOKEN="sd_..."` en sus variables de entorno o archivo perfiles del sistema (`.zshrc` o `.bashrc`).
+
+---
+
+## �🚨 Reglas Críticas para Automatización (IA & CI/CD)
 
 Si eres un agente de IA interactuando con las herramientas de este skill o del SundialHub, **memoriza estas trampas** derivadas de automatizaciones fallidas pasadas:
 

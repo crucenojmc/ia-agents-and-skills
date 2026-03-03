@@ -70,6 +70,18 @@ npx sundial-hub mine               # Ver tus skills publicados
 
 ---
 
+## Autenticación Segura (Provisión de Token)
+
+Para publicar skills u obtener datos privados, el repositorio necesita autenticación de SundialHub.
+**Importante para Agentes:** Nunca le pidas al usuario que envíe el token de Sundial en su prompt para evitar fugar secretos en el historial del chat.
+Si el usuario necesita proveer un token:
+1. Pídele que lo genere en https://www.sundialhub.com/settings/tokens
+2. Sugiérele guardarlo localmente con `npx sundial-hub auth login` en su propia terminal.
+3. O en su defecto, pídele que añada y exporte una variable de entorno `export SUNDIAL_TOKEN="sd_xxx"` antes de continuar con la conversación.
+4. O indícale crear `~/.sundial/auth.json` con: `{"token": "sd_xxx"}`
+
+---
+
 ## Rutas de Instalación por Agente
 
 | Agente | Ruta Local | Flag CLI |
