@@ -192,7 +192,7 @@ Se ejecuta automáticamente dentro de `publish_to_sundial.sh` y `sundial_api.sh 
 | 1 | `API_TOKEN` | CRITICAL | Tokens con prefijo conocido: `sd_`, `sk-`, `ghp_`, `gho_`, `ghs_`, `glpat-`, `xoxb-`, `AKIA`, `AIza`, `ya29.`, JWT |
 | 2 | `API_KEY_GENERIC` | HIGH | Asignaciones de API key/secret/token con valores no-placeholder |
 | 3 | `PASSWORD` | CRITICAL | Passwords hardcodeadas en asignaciones |
-| 4 | `CONNECTION_STRING` | CRITICAL | URIs con credenciales: `postgres://user:pass@host` |
+| 4 | `CONNECTION_STRING` | CRITICAL | URIs con credenciales: `postgres://<user>:<pass>@host` |
 | 5 | `ENV_FILE` | CRITICAL | Archivos `.env`, `.env.local`, `.env.production`, etc. |
 | 6 | `PRIVATE_KEY_FILE` | CRITICAL | Archivos `id_rsa`, `*.pem`, `*.key`, `*.p12`, etc. |
 | 7 | `CREDENTIALS_FILE` | CRITICAL | Archivos `credentials.json`, `service-account*.json` |
@@ -200,7 +200,7 @@ Se ejecuta automáticamente dentro de `publish_to_sundial.sh` y `sundial_api.sh 
 | 9 | `PRIVATE_IP` | MEDIUM | IPs RFC 1918: `10.x.x.x`, `172.16-31.x.x`, `192.168.x.x` |
 | 10 | `INTERNAL_URL` | MEDIUM | URLs a `localhost`, `internal.`, `staging.`, `dev.` |
 | 11 | `EMAIL` | LOW | Emails personales (excluye `example.com`, `test.com`) |
-| 12 | `EMBEDDED_KEY` | CRITICAL | Bloques `-----BEGIN PRIVATE KEY-----` y similares |
+| 12 | `EMBEDDED_KEY` | CRITICAL | Bloques `-----BEGIN ... KEY-----` y similares |
 | 13 | `HARDCODED_ENV` | HIGH | Variables como `AWS_SECRET=`, `DB_PASSWORD=`, `JWT_SECRET=` con valores |
 
 ### 2.3 Filtros de Falsos Positivos
