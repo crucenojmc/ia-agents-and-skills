@@ -38,6 +38,7 @@ NC='\033[0m'
 # ── Configuración ───────────────────────────────────────────────────────────
 BASE_URL="${SUNDIAL_HUB_URL:-https://www.sundialhub.com}"
 AUTH_FILE="$HOME/.sundial/auth.json"
+[ -f "$AUTH_FILE" ] && chmod 600 "$AUTH_FILE" 2>/dev/null
 
 # ── Funciones de utilidad ────────────────────────────────────────────────────
 

@@ -166,12 +166,12 @@ fi
 echo ""
 echo -e "${BOLD}🔑 Paso 3/4: Verificando autenticación con SundialHub...${NC}"
 
-AUTH_STATUS=$(npx --yes sundial-hub auth status 2>/dev/null || echo "not_authenticated")
+AUTH_STATUS=$(npx --yes sundial-hub@0.1.13 auth status 2>/dev/null || echo "not_authenticated")
 
 if echo "$AUTH_STATUS" | grep -qi "not.*auth\|logged out\|error\|not_authenticated"; then
   echo -e "${YELLOW}  No autenticado. Iniciando login...${NC}"
   echo ""
-  npx --yes sundial-hub auth login
+  npx --yes sundial-hub@0.1.13 auth login
   echo ""
   echo -e "${GREEN}  ✓ Autenticado${NC}"
 else
@@ -209,7 +209,7 @@ fi
 # -- FIN FIX --
 
 # Construir comando push con las opciones especificadas
-PUSH_CMD="npx --yes sundial-hub push \"$SKILL_PATH\""
+PUSH_CMD="npx --yes sundial-hub@0.1.13 push \"$SKILL_PATH\""
 [[ -n "$VERSION" ]] && PUSH_CMD="$PUSH_CMD --version $VERSION"
 [[ -n "$CHANGELOG" ]] && PUSH_CMD="$PUSH_CMD --changelog \"$CHANGELOG\""
 [[ -n "$VISIBILITY" ]] && PUSH_CMD="$PUSH_CMD --visibility $VISIBILITY"

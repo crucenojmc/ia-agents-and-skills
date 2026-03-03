@@ -162,7 +162,7 @@ for TARGET in "${TARGETS[@]}"; do
       ;;
   esac
 
-  if npx --yes sundial-hub add "$SKILL_REF" $TARGET_FLAG --yes 2>/dev/null; then
+  if npx --yes sundial-hub@0.1.13 add "$SKILL_REF" $TARGET_FLAG --yes 2>/dev/null; then
     echo -e "    ${GREEN}✓ Instalado correctamente${NC}"
     SUCCESS=$((SUCCESS + 1))
   else

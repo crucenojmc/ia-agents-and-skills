@@ -172,12 +172,12 @@ fi
 
 # Modo JSON crudo (para uso por agentes)
 if [[ "$JSON_MODE" == "true" ]]; then
-  npx --yes sundial-hub find "$QUERY" --json --limit "$LIMIT" 2>/dev/null
+  npx --yes sundial-hub@0.1.13 find "$QUERY" --json --limit "$LIMIT" 2>/dev/null
   exit 0
 fi
 
 # Modo interactivo — parsear JSON y mostrar formateado
-RAW_JSON=$(npx --yes sundial-hub find "$QUERY" --json --limit "$LIMIT" 2>/dev/null || echo "[]")
+RAW_JSON=$(npx --yes sundial-hub@0.1.13 find "$QUERY" --json --limit "$LIMIT" 2>/dev/null || echo "[]")
 
 # Verificar si hay resultados
 if [[ "$RAW_JSON" == "[]" || -z "$RAW_JSON" ]]; then
