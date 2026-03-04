@@ -7,7 +7,7 @@ description: >
 license: MIT
 
 author: mapplics
-version: 27
+version: 28
 allowed-tools: [Read, Edit, Grep, Glob, Bash, Run]
 ---
 
