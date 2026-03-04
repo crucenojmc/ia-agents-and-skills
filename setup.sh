@@ -1,1 +1,0 @@
-skills/universal-skill-creator/scripts/setup_agents.sh
